@@ -1,6 +1,6 @@
 from discord.ext import commands
-from utils.utils import is_music_related, log_event, get_prefix, get_prefix_for_guild, in_music_channel, \
-    get_music_channel_for_guild
+from utils.utils import is_music_related, log_event, get_prefix, get_prefix_for_guild_id, in_music_channel, \
+    get_music_channel_id_for_guild_id
 import discord
 import os
 import logging
@@ -39,12 +39,13 @@ async def on_message(message):
         return
 
     if elfbot.user.mentioned_in(message):
-        pf = get_prefix_for_guild(message.guild.id)
-        await message.channel.send(f'My prefix in this server is {pf}\nUse "{pf}help" for more info')
+        pf = get_prefix_for_guild_id(message.guild.id)
+        author = message.author
+        await message.channel.send(f'{author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info')
 
     elif message and not in_music_channel(message) and is_music_related(message):
         log_event(f'Caught unauthorized music related message: {message.content} by {message.author}')
-        music_channel = elfbot.get_channel(get_music_channel_for_guild(message.guild.id))
+        music_channel = elfbot.get_channel(get_music_channel_id_for_guild_id(message.guild.id))
         await message.delete()
         if message.embeds:
             for embed in message.embeds:

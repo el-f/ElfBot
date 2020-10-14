@@ -33,10 +33,10 @@ def is_music_related(message: Message):
         'Rythm#3722'
     ]
     for bot in music_bots:
-        if bot == author:
+        if author == bot:
             return True
 
-    music_related_words = [
+    music_related_commands = [
         'play',
         'skip',
         'queue',
@@ -49,8 +49,8 @@ def is_music_related(message: Message):
         'lyrics'
     ]
     msg = str(message.content)[1:]
-    for word in music_related_words:
-        if msg.startswith(word):
+    for command in music_related_commands:
+        if msg.startswith(command):
             return True
 
     return False
@@ -58,21 +58,21 @@ def is_music_related(message: Message):
 
 def in_music_channel(message):
     try:
-        return message.channel.id == get_music_channel_for_guild(message.guild.id)
+        return message.channel.id == get_music_channel_id_for_guild_id(message.guild.id)
     except KeyError:
         log_event(f"Failed trying to find a music channel for server '{message.guild}'", logging.WARN)
         return True  # if there is no music channel then all channels are music channels
 
 
-def get_music_channel_for_guild(gid):
+def get_music_channel_id_for_guild_id(gid):
     music_channels = json.load(open(MUSIC_CHANNELS_PATH, 'r'))
     return music_channels[str(gid)]
 
 
-def get_prefix_for_guild(gid):
+def get_prefix_for_guild_id(gid):
     prefixes = json.load(open(PREFIXES_PATH, 'r'))
     return prefixes[str(gid)]
 
 
 def get_prefix(bot, message: Message):  # 'bot' arg is passed but not used
-    return get_prefix_for_guild(message.guild.id)
+    return get_prefix_for_guild_id(message.guild.id)
