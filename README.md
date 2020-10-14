@@ -1,4 +1,4 @@
-# ElfBot
+# ElfBot [![CodeFactor](https://www.codefactor.io/repository/github/elfein7night/elfbot/badge)](https://www.codefactor.io/repository/github/elfein7night/elfbot)
 A Simple Discord Bot To Handle Music Bots' Spam
 
 ##### Usage:
