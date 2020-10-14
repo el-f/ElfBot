@@ -75,6 +75,7 @@ def get_prefix_for_guild_id(gid):
         prefixes = json.load(open(PREFIXES_PATH, 'r'))
         return prefixes[str(gid)]
     except KeyError:
+        log_event(f"Failed trying to fetch prefix for server id {gid}", logging.CRITICAL)
         return DEFAULT_PREFIX
 
 
