@@ -1,5 +1,5 @@
 # ElfBot [![CodeFactor](https://www.codefactor.io/repository/github/elfein7night/elfbot/badge)](https://www.codefactor.io/repository/github/elfein7night/elfbot)
-A Simple Discord Bot To Handle Music Bots' Spam
+A Simple Discord Bot For Handling Music Bots' Spam
 
 ##### Usage:
   - Add a ```token``` file to the project dir with your bot user token
