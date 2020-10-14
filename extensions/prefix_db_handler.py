@@ -1,8 +1,6 @@
 import json
 from discord.ext import commands
-from utils.utils import log_event, PREFIXES_PATH
-
-DEFAULT_PREFIX = '?'
+from utils.utils import log_event, PREFIXES_PATH, DEFAULT_PREFIX
 
 
 def set_prefix_for_server(guild_id, prefix=DEFAULT_PREFIX):

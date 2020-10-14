@@ -3,6 +3,7 @@ from datetime import datetime
 import logging
 from discord.message import Message
 
+DEFAULT_PREFIX = '?'
 PREFIXES_PATH = 'database/prefixes_for_servers.json'
 MUSIC_CHANNELS_PATH = 'database/music_channels_for_servers.json'
 
@@ -70,8 +71,11 @@ def get_music_channel_id_for_guild_id(gid):
 
 
 def get_prefix_for_guild_id(gid):
-    prefixes = json.load(open(PREFIXES_PATH, 'r'))
-    return prefixes[str(gid)]
+    try:
+        prefixes = json.load(open(PREFIXES_PATH, 'r'))
+        return prefixes[str(gid)]
+    except KeyError:
+        return DEFAULT_PREFIX
 
 
 def get_prefix(bot, message: Message):  # 'bot' arg is passed but not used
