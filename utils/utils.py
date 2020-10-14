@@ -7,7 +7,7 @@ DEFAULT_PREFIX = '?'
 PREFIXES_PATH = 'database/prefixes_for_servers.json'
 MUSIC_CHANNELS_PATH = 'database/music_channels_for_servers.json'
 
-logging.basicConfig(filename='../events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
+logging.basicConfig(filename='events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
 
 
 def log_event(string, level=logging.INFO):
