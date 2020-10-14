@@ -1,7 +1,6 @@
 from discord.ext import commands
+from utils.utils import log_event
 import random
-
-from elfbot import log_event
 
 
 # a simple example of a custom check for a command
@@ -61,7 +60,7 @@ class AdminCommands(commands.Cog):
     async def ping(self, ctx):
         await ctx.send(f'{ctx.author.mention} latency: ({round(self.bot.latency * 1000)}ms)')
 
-    @commands.command(brief="Clear previous messages in channel. Can be called with a specific amount")
+    @commands.command(brief="Clear previous messages. Can be called with a specific amount")
     @commands.has_permissions(manage_messages=True)
     async def clear(self, ctx, amount=2):  # default 2 - clear this clear command and the previous one in the channel
         await ctx.channel.purge(limit=amount)

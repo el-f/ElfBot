@@ -1,32 +1,13 @@
 from discord.ext import commands
+from utils.utils import is_music_related, log_event, get_prefix, get_prefix_for_guild, in_music_channel, \
+    get_music_channel_for_guild
 import discord
 import os
-import json
 import logging
-from datetime import datetime
 
-logging.basicConfig(filename='events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
 TOKEN = open("token", "r").read()  # the token is in a private file called "token"
-PREFIXES_PATH = 'database/prefixes_for_servers.json'
-
-
-def get_prefix_from_guild_id(gid):
-    prefixes = json.load(open(PREFIXES_PATH, 'r'))
-    return prefixes[str(gid)]
-
-
-def get_prefix(bot, message):  # 'bot' arg is passed but not used
-    log_event(f"got an useless arg {bot}")
-    return get_prefix_from_guild_id(message.guild.id)
-
 
 elfbot = commands.Bot(command_prefix=get_prefix)  # callable prefix - invoked on every message
-
-
-def log_event(string, level=logging.INFO):
-    message = f'{datetime.now().strftime("[%d/%m/%y | %H:%M:%S]")} - {string}'
-    logging.log(level=level, msg=message)
-    print(message)
 
 
 @elfbot.event
@@ -41,9 +22,12 @@ async def on_ready():
 @elfbot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('Please add required argument to command')
-    if isinstance(error, commands.MissingPermissions):
+        await ctx.send(f'Please use the command with the required argument: <{error.param}>')
+
+    elif isinstance(error, commands.MissingPermissions):
         log_event(f'{ctx.author} tried using a restricted command ({ctx.command})', logging.WARN)
+        await ctx.send(f"{ctx.author.mention} you don't have enough permissions to use {ctx.command}")
+
     else:
         log_event(f'An Error Occurred! - [Error: {error} | Command: {ctx.command} | Author: {ctx.author}]',
                   logging.WARN)
@@ -53,16 +37,29 @@ async def on_command_error(ctx, error):
 async def on_message(message):
     if message.author == elfbot.user:
         return
+
     if elfbot.user.mentioned_in(message):
-        pf = get_prefix_from_guild_id(message.guild.id)
+        pf = get_prefix_for_guild(message.guild.id)
         await message.channel.send(f'My prefix in this server is {pf}\nUse "{pf}help" for more info')
+
+    elif message and not in_music_channel(message) and is_music_related(message):
+        log_event(f'Caught unauthorized music related message: {message.content} by {message.author}')
+        music_channel = elfbot.get_channel(get_music_channel_for_guild(message.guild.id))
+        await message.delete()
+        if message.embeds:
+            for embed in message.embeds:
+                await music_channel.send(embed=embed)
+        else:
+            await music_channel.send(message.content)
+
     else:
         await elfbot.process_commands(message)
 
 
-# load all extensions
-for filename in os.listdir('extensions'):
-    if filename.endswith('.py'):
-        elfbot.load_extension(f'extensions.{filename[:-3]}')
+if __name__ == '__main__':
+    # load all extensions
+    for filename in os.listdir('extensions'):
+        if filename.endswith('.py'):
+            elfbot.load_extension(f'extensions.{filename[:-3]}')
 
-elfbot.run(TOKEN)
+    elfbot.run(TOKEN)
