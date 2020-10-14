@@ -23,7 +23,7 @@ def is_music_related(message: Message):
         for embed in message.embeds:
             if help_command_trigger in embed.description:
                 return False
-            elif embed.fields:
+            if embed.fields:
                 for field in embed.fields:
                     if help_command_trigger in str(field):
                         return False
