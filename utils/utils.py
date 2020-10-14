@@ -16,6 +16,17 @@ def log_event(string, level=logging.INFO):
 
 
 def is_music_related(message: Message):
+    help_command_trigger = 'list of commands'
+    # for case of 'help' command
+    if message.embeds:
+        for embed in message.embeds:
+            if help_command_trigger in embed.description:
+                return False
+            elif embed.fields:
+                for field in embed.fields:
+                    if help_command_trigger in str(field):
+                        return False
+
     author = str(message.author)
     music_bots = [
         'Groovy#7254',
@@ -33,7 +44,9 @@ def is_music_related(message: Message):
         'loop',
         'resume',
         'pause',
-        'p'
+        'p',
+        'fs',
+        'lyrics'
     ]
     msg = str(message.content)[1:]
     for word in music_related_words:
