@@ -1,54 +1,68 @@
-import random
 from discord.ext import commands
+import discord
+import os
+import json
+import logging
+from datetime import datetime
 
-bot = commands.Bot(command_prefix='?')
-token = open("token", "r").read()  # the token is in a private file called "token"
+logging.basicConfig(filename='events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
+TOKEN = open("token", "r").read()  # the token is in a private file called "token"
+PREFIXES_PATH = 'database/prefixes_for_servers.json'
 
 
-@bot.event
+def get_prefix_from_guild_id(gid):
+    prefixes = json.load(open(PREFIXES_PATH, 'r'))
+    return prefixes[str(gid)]
+
+
+def get_prefix(bot, message):  # 'bot' arg is passed but not used
+    log_event(f"got an useless arg {bot}")
+    return get_prefix_from_guild_id(message.guild.id)
+
+
+elfbot = commands.Bot(command_prefix=get_prefix)  # callable prefix - invoked on every message
+
+
+def log_event(string, level=logging.INFO):
+    message = f'{datetime.now().strftime("[%d/%m/%y | %H:%M:%S]")} - {string}'
+    logging.log(level=level, msg=message)
+    print(message)
+
+
+@elfbot.event
 async def on_ready():
-    print(f'{bot.user} is Online')
+    await elfbot.change_presence(activity=discord.Activity(name='for a mention',
+                                                           type=discord.ActivityType.watching
+                                                           )
+                                 )
+    log_event(f'{elfbot.user} is Online')
 
 
-@bot.command()
-async def ping(ctx):
-    await ctx.send(f'WIP 🤫 ({round(bot.latency * 1000)}ms)')
+@elfbot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('Please add required argument to command')
+    if isinstance(error, commands.MissingPermissions):
+        log_event(f'{ctx.author} tried using a restricted command ({ctx.command})', logging.WARN)
+    else:
+        log_event(f'An Error Occurred! - [Error: {error} | Command: {ctx.command} | Author: {ctx.author}]',
+                  logging.WARN)
 
 
-@bot.command(aliases=['8ball'])
-async def _8ball(ctx, *, question=None):
-    responses = [
-        "It is certain.",
-        "It is decidedly so.",
-        "Without a doubt.",
-        "Yes - definitely.",
-        "You may rely on it.",
-        "As I see it, yes.",
-        "Most likely.",
-        "Outlook good.",
-        "Yes.",
-        "Signs point to yes.",
-        "Reply hazy, try again.",
-        "Ask again later.",
-        "Better not tell you now.",
-        "Cannot predict now.",
-        "Concentrate and ask again.",
-        "Don't count on it.",
-        "My reply is no.",
-        "My sources say no.",
-        "Outlook not so good.",
-        "Very doubtful."
-    ]
-    await ctx.send(
-        f"Please Enter a Question After '{bot.command_prefix}8ball'" if question is None
-        else f'Question: {question}\nAnswer: {random.choice(responses)}'
-    )
+@elfbot.event
+async def on_message(message):
+    if message.author == elfbot.user:
+        return
+    if elfbot.user.mentioned_in(message):
+        pf = get_prefix_from_guild_id(message.guild.id)
+        await message.channel.send(f'My prefix in this server is {pf}\nUse "{pf}help" for more info')
+    else:
+        await elfbot.process_commands(message)
 
 
-@bot.command()
-@commands.has_permissions(administrator=True)
-async def clear(ctx, amount=2):
-    await ctx.channel.purge(limit=amount)
+# load all extensions
+for filename in os.listdir('extensions'):
+    if filename.endswith('.py'):
+        elfbot.load_extension(f'extensions.{filename[:-3]}')
 
-
-bot.run(token)
+elfbot.run(TOKEN)
