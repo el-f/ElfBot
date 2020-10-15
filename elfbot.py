@@ -5,22 +5,6 @@ import discord
 import os
 import logging
 
-
-def get_token():
-    """
-    the token is in a private file called "token"
-    first we try to find the token file for case of running from individual machine
-    if file not found we look for environment var for case of running from a deployed server
-    :return: token (string)
-    """
-    try:
-        return open("token", "r").read()
-    except FileNotFoundError:
-        log_event('Running from environment variable')
-        return os.environ['DISCORD_BOT_TOKEN']
-
-
-TOKEN = get_token()
 elfbot = commands.Bot(command_prefix=get_prefix)  # callable prefix - invoked on every message
 
 
@@ -71,9 +55,25 @@ async def on_message(message):
         await elfbot.process_commands(message)
 
 
+def get_token():
+    """
+    the token is in a private file called "token"
+    first we try to find the token file for case of running from individual machine
+    if file not found we look for environment var for case of running from a deployed server
+    :return: token (string)
+    """
+    try:
+        token = open("token", "r").read()
+        log_event('Running from token file')
+        return token
+    except FileNotFoundError:
+        log_event('Running from environment variable')
+        return os.environ['DISCORD_BOT_TOKEN']
+
+
 # load all extensions
 for filename in os.listdir('extensions'):
     if filename.endswith('.py'):
         elfbot.load_extension(f'extensions.{filename[:-3]}')
 
-elfbot.run(TOKEN)
+elfbot.run(get_token())

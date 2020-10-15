@@ -20,6 +20,7 @@ class MusicChannelsDBHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
         remove_server(guild.id)
+        log_event(f"left the server '{guild}'")
 
     @commands.command(brief="Set a text channel to a music spam channel")
     @commands.has_permissions(administrator=True)
@@ -35,7 +36,7 @@ class MusicChannelsDBHandler(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def delmusic(self, ctx):
         remove_server(ctx.guild.id)
-        message = f"music spam settings for the server '{ctx.guild}' have been deleted"
+        message = f"Music spam settings for the server '{ctx.guild}' have been deleted"
         log_event(message)
         await ctx.send(f'{ctx.author.mention} {message}')
 
