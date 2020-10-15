@@ -71,10 +71,9 @@ async def on_message(message):
         await elfbot.process_commands(message)
 
 
-if __name__ == '__main__':
-    # load all extensions
-    for filename in os.listdir('extensions'):
-        if filename.endswith('.py'):
-            elfbot.load_extension(f'extensions.{filename[:-3]}')
+# load all extensions
+for filename in os.listdir('extensions'):
+    if filename.endswith('.py'):
+        elfbot.load_extension(f'extensions.{filename[:-3]}')
 
-    elfbot.run(TOKEN)
+elfbot.run(TOKEN)
