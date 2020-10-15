@@ -45,7 +45,7 @@ def is_music_related(message: Message):
         'loop',
         'resume',
         'pause',
-        'p',
+        'p ',
         'fs',
         'lyrics'
     ]
