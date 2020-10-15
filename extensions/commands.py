@@ -81,6 +81,10 @@ class AdminCommands(commands.Cog):
     async def repo(self, ctx):
         await ctx.send('Source Code:\nhttps://github.com/Elfein7Night/ElfBot')
 
+    @commands.command(brief="Get an invite link to join the bot to your server")
+    async def invite(self, ctx):
+        await ctx.send(f'{ctx.author.mention} Invite me to your server here:\nhttps://bit.ly/31cs0qz')
+
 
 # expected function for outside calling function 'load_extension()'
 def setup(_bot):

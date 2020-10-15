@@ -2,8 +2,11 @@
 A Simple Discord Bot To Handle Music Bots' Spam
 
 ##### Usage:
-  - Add a ```token``` file to the project dir with your bot user token
-  - Run ```elfbot.py```
-  - Join your bot to the server
+  - Deploying yourself:
+    - Add a ```token``` file to the project dir with your bot user token
+    - Run ```elfbot.py```
+    - Join your bot to the server
+  - Or Using My Deployed Bot:
+    - https://bit.ly/31cs0qz
   - Go into the designated music spam text channel and enter the command ```?setmusic``` (```?``` - prefix)
   - Enjoy cleaner text channels without all the spam from music bots related messages

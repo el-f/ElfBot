@@ -5,8 +5,22 @@ import discord
 import os
 import logging
 
-TOKEN = open("token", "r").read()  # the token is in a private file called "token"
 
+def get_token():
+    """
+    the token is in a private file called "token"
+    first we try to find the token file for case of running from individual machine
+    if file not found we look for environment var for case of running from a deployed server
+    :return: token (string)
+    """
+    try:
+        return open("token", "r").read()
+    except FileNotFoundError:
+        log_event('Running from environment variable')
+        return os.getenv('DISCORD_BOT_TOKEN')
+
+
+TOKEN = get_token()
 elfbot = commands.Bot(command_prefix=get_prefix)  # callable prefix - invoked on every message
 
 
@@ -30,7 +44,7 @@ async def on_command_error(ctx, error):
 
     else:
         log_event(f'An Error Occurred! - [Error: {error} | Command: {ctx.command} | Author: {ctx.author}]',
-                  logging.WARN)
+                  logging.CRITICAL)
 
 
 @elfbot.event
