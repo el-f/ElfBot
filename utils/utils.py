@@ -6,13 +6,13 @@ import logging
 from discord.message import Message
 
 DEFAULT_PREFIX = '?'
-PREFIXES_PATH = 'database/prefixes_for_servers.json'
-MUSIC_CHANNELS_PATH = 'database/music_channels_for_servers.json'
+PREFIXES_DB_NAME = 'prefixed_for_servers'
+MUSIC_CH_DB_NAME = 'music_channels_for_servers'
 
 
 def get_db_url():
     try:
-        return open("utils/db_url")
+        return open("utils/db_url", "r").read()
     except FileNotFoundError:
         return os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 
@@ -95,17 +95,23 @@ def in_music_channel(message):
 
 
 def get_music_channel_id_for_guild_id(gid):
-    music_channels = json.load(open(MUSIC_CHANNELS_PATH, 'r'))
-    return music_channels[str(gid)]
+    if db.get(MUSIC_CH_DB_NAME) is None:
+        raise KeyError
+    else:
+        music_channels = json.loads(db.get(MUSIC_CH_DB_NAME).decode('utf-8'))
+        return music_channels[str(gid)]
 
 
 def get_prefix_for_guild_id(gid):
-    try:
-        prefixes = json.load(open(PREFIXES_PATH, 'r'))
-        return prefixes[str(gid)]
-    except KeyError:
-        log_event(f"Failed trying to fetch prefix for server id {gid}", logging.CRITICAL)
-        return DEFAULT_PREFIX
+    if db.get(PREFIXES_DB_NAME) is not None:
+        try:
+            prefixes = json.loads(db.get(PREFIXES_DB_NAME).decode('utf-8'))
+            return prefixes[str(gid)]
+        except KeyError:
+            log_event(f"Failed trying to fetch prefix for server id {gid}", logging.CRITICAL)
+            return DEFAULT_PREFIX
+    log_event(f"Error Fetching prefixes DB", logging.CRITICAL)
+    return DEFAULT_PREFIX
 
 
 def get_prefix(bot, message: Message):  # 'bot' arg is passed but not used

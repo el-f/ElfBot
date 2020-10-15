@@ -1,12 +1,15 @@
 import json
 from discord.ext import commands
-from utils.utils import log_event, PREFIXES_PATH, DEFAULT_PREFIX
+from utils.utils import log_event, PREFIXES_DB_NAME, DEFAULT_PREFIX, db
 
 
 def set_prefix_for_server(guild_id, prefix=DEFAULT_PREFIX):
-    prefixes = json.load(open(PREFIXES_PATH, 'r'))
-    prefixes[str(guild_id)] = prefix
-    json.dump(prefixes, open(PREFIXES_PATH, 'w'), indent=4)
+    if db.get(PREFIXES_DB_NAME) is None:
+        prefixes_for_servers = {}
+    else:
+        prefixes_for_servers = json.loads(db.get(PREFIXES_DB_NAME).decode('utf-8'))
+    prefixes_for_servers[str(guild_id)] = prefix
+    db.set(PREFIXES_DB_NAME, json.dumps(prefixes_for_servers))
 
 
 class PrefixDBHandler(commands.Cog):
@@ -26,10 +29,13 @@ class PrefixDBHandler(commands.Cog):
     # On Leaving Server
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
-        prefixes = json.load(open(PREFIXES_PATH, 'r'))
-        prefixes.pop(str(guild.id))
-        json.dump(prefixes, open(PREFIXES_PATH, 'w'), indent=4)
-        log_event(f"Left the server '{guild}'")
+        if db.get(PREFIXES_DB_NAME) is not None:
+            prefixes_for_servers = json.loads(db.get(PREFIXES_DB_NAME).decode('utf-8'))
+            try:
+                prefixes_for_servers.pop(str(guild.id))
+                db.set(PREFIXES_DB_NAME, json.dumps(prefixes_for_servers))
+            except KeyError:
+                pass
 
     @commands.command(brief="Change the bot's prefix for this server")
     @commands.has_permissions(administrator=True)
