@@ -17,7 +17,7 @@ def get_token():
         return open("token", "r").read()
     except FileNotFoundError:
         log_event('Running from environment variable')
-        return os.getenv('DISCORD_BOT_TOKEN')
+        return os.environ['DISCORD_BOT_TOKEN']
 
 
 TOKEN = get_token()
