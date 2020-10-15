@@ -4,7 +4,7 @@ from utils.utils import log_event, db
 
 
 def remove_server(gid):
-    music_channels = json.loads(db.get('music_channels')).decode('utf-8')
+    music_channels = json.loads(db.get('music_channels').decode('utf-8'))
     music_channels.pop(str(gid))
     db.set('music_channels', json.dumps(music_channels))
 
@@ -25,7 +25,7 @@ class MusicChannelsDBHandler(commands.Cog):
     @commands.command(brief="Set a text channel to a music spam channel")
     @commands.has_permissions(administrator=True)
     async def setmusic(self, ctx):
-        music_channels = json.loads(db.get('music_channels')).decode('utf-8')
+        music_channels = json.loads(db.get('music_channels').decode('utf-8'))
         music_channels[str(ctx.guild.id)] = ctx.channel.id
         db.set('music_channels', json.dumps(music_channels))
         message = f"{ctx.channel.name} is now set as the music spam channel for the server '{ctx.guild}'"
