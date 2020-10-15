@@ -1,6 +1,6 @@
 from discord.ext import commands
 from utils.utils import is_music_related, log_event, get_prefix, get_prefix_for_guild_id, in_music_channel, \
-    get_music_channel_id_for_guild_id
+    get_music_channel_id_for_guild_id, get_token
 import discord
 import os
 import logging
@@ -53,22 +53,6 @@ async def on_message(message):
 
     else:
         await elfbot.process_commands(message)
-
-
-def get_token():
-    """
-    the token is in a private file called "token"
-    first we try to find the token file for case of running from individual machine
-    if file not found we look for environment var for case of running from a deployed server
-    :return: token (string)
-    """
-    try:
-        token = open("token", "r").read()
-        log_event('Running from token file')
-        return token
-    except FileNotFoundError:
-        log_event('Running from environment variable')
-        return os.environ['DISCORD_BOT_TOKEN']
 
 
 # load all extensions

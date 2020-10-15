@@ -1,12 +1,12 @@
 import json
 from discord.ext import commands
-from utils.utils import log_event, MUSIC_CHANNELS_PATH
+from utils.utils import log_event, db
 
 
 def remove_server(gid):
-    music_channels = json.load(open(MUSIC_CHANNELS_PATH, 'r'))
+    music_channels = json.loads(db.get('music_channels')).decode('utf-8')
     music_channels.pop(str(gid))
-    json.dump(music_channels, open(MUSIC_CHANNELS_PATH, 'w'), indent=4)
+    db.set('music_channels', json.dumps(music_channels))
 
 
 class MusicChannelsDBHandler(commands.Cog):
@@ -25,9 +25,9 @@ class MusicChannelsDBHandler(commands.Cog):
     @commands.command(brief="Set a text channel to a music spam channel")
     @commands.has_permissions(administrator=True)
     async def setmusic(self, ctx):
-        music_channels = json.load(open(MUSIC_CHANNELS_PATH, 'r'))
+        music_channels = json.loads(db.get('music_channels')).decode('utf-8')
         music_channels[str(ctx.guild.id)] = ctx.channel.id
-        json.dump(music_channels, open(MUSIC_CHANNELS_PATH, 'w'), indent=4)
+        db.set('music_channels', json.dumps(music_channels))
         message = f"{ctx.channel.name} is now set as the music spam channel for the server '{ctx.guild}'"
         log_event(message)
         await ctx.send(f'{ctx.author.mention} {message}')

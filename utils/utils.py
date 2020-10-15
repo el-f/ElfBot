@@ -1,4 +1,6 @@
 import json
+import os
+import redis
 from datetime import datetime
 import logging
 from discord.message import Message
@@ -6,6 +8,33 @@ from discord.message import Message
 DEFAULT_PREFIX = '?'
 PREFIXES_PATH = 'database/prefixes_for_servers.json'
 MUSIC_CHANNELS_PATH = 'database/music_channels_for_servers.json'
+
+
+def get_db_url():
+    try:
+        return open("utils/db_url")
+    except FileNotFoundError:
+        return os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+
+
+db = redis.from_url(get_db_url())
+
+
+def get_token():
+    """
+    the token is in a private file called "token"
+    first we try to find the token file for case of running from individual machine
+    if file not found we look for environment var for case of running from a deployed server
+    :return: token (string)
+    """
+    try:
+        token = open("utils/token", "r").read()
+        log_event('Running from token file')
+        return token
+    except FileNotFoundError:
+        log_event('Running from environment variable')
+        return os.getenv('DISCORD_BOT_TOKEN')
+
 
 logging.basicConfig(filename='events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
 

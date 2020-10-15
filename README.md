@@ -4,7 +4,7 @@ A Simple Discord Bot For Handling Music Bots' Spam
 ##### Usage:
   - Deploying Your Own Bot:
     - Self Hosted:
-      - Add a ```token``` file to the project dir with your bot user token
+      - Add a ```token``` file to the utils folder with your bot user token
       - Run ```elfbot.py```
       - Invite the bot to a server you manage
     - Heroku:
