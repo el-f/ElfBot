@@ -19,6 +19,12 @@ def log_event(string, level=logging.INFO):
 
 
 def get_db_url():
+    """
+    the db_url is in a private file called "db_url"
+    first we try to find the token file for case of running from individual machine
+    if file not found we look for environment var for case of running from a deployed server
+    :return: db_url (string)
+    """
     try:
         db_url = open("utils/db_url", "r").read()
         log_event('Fetched db_url from db_url file')
@@ -61,15 +67,20 @@ def is_music_related(message: Message):
 
     author = str(message.author)
     music_bots = [
+        # top 5 most used music bots
         'Groovy#7254',
-        'Rythm#3722'
+        'Rythm#3722',
+        'FredBoat♪♪#7284',
+        '24/7 🔊#6493',
+        'Vexera#8487'
     ]
     for bot in music_bots:
         if author == bot:
             return True
 
+    msg = str(message.content)[1:]
     music_related_commands = [
-        'play',
+        'play ',
         'skip',
         'queue',
         'next',
@@ -78,9 +89,19 @@ def is_music_related(message: Message):
         'pause',
         'p ',
         'fs',
-        'lyrics'
+        'lyrics',
+        'stop',
+        'join',
+        'leave',
+        'search',
+        'shuffle',
+        'seek',
+        'np',
+        'repeat',
+        'previous',
+        'replay',
+        'volume'
     ]
-    msg = str(message.content)[1:]
     for command in music_related_commands:
         if msg.startswith(command):
             return True
