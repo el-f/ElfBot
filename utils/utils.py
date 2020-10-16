@@ -9,11 +9,22 @@ DEFAULT_PREFIX = '?'
 PREFIXES_DB_NAME = 'prefixed_for_servers'
 MUSIC_CH_DB_NAME = 'music_channels_for_servers'
 
+logging.basicConfig(filename='events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
+
+
+def log_event(string, level=logging.INFO):
+    msg = f'{datetime.now().strftime("[%d/%m/%y | %H:%M:%S]")} - {string}'
+    logging.log(level=level, msg=msg)
+    print(msg)
+
 
 def get_db_url():
     try:
-        return open("utils/db_url", "r").read()
+        db_url = open("utils/db_url", "r").read()
+        log_event('Fetched db_url from db_url file')
+        return db_url
     except FileNotFoundError:
+        log_event('Fetched db_url from environment variable')
         return os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
 
 
@@ -29,20 +40,11 @@ def get_token():
     """
     try:
         token = open("utils/token", "r").read()
-        log_event('Running from token file')
+        log_event('Fetched token from token file')
         return token
     except FileNotFoundError:
-        log_event('Running from environment variable')
+        log_event('Fetched token from environment variable')
         return os.getenv('DISCORD_BOT_TOKEN')
-
-
-logging.basicConfig(filename='events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
-
-
-def log_event(string, level=logging.INFO):
-    msg = f'{datetime.now().strftime("[%d/%m/%y | %H:%M:%S]")} - {string}'
-    logging.log(level=level, msg=msg)
-    print(msg)
 
 
 def is_music_related(message: Message):
@@ -97,9 +99,9 @@ def in_music_channel(message):
 def get_music_channel_id_for_guild_id(gid):
     if db.get(MUSIC_CH_DB_NAME) is None:
         raise KeyError
-    else:
-        music_channels = json.loads(db.get(MUSIC_CH_DB_NAME).decode('utf-8'))
-        return music_channels[str(gid)]
+
+    music_channels = json.loads(db.get(MUSIC_CH_DB_NAME).decode('utf-8'))
+    return music_channels[str(gid)]
 
 
 def get_prefix_for_guild_id(gid):

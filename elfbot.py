@@ -23,12 +23,12 @@ async def on_command_error(ctx, error):
         await ctx.send(f'Please use the command with the required argument: <{error.param}>')
 
     elif isinstance(error, commands.MissingPermissions):
-        log_event(f'{ctx.author} tried using a restricted command ({ctx.command})', logging.WARN)
+        log_event(f'{ctx.author} tried using a restricted command ({ctx.command}) [server={ctx.guild}]', logging.WARN)
         await ctx.send(f"{ctx.author.mention} you don't have enough permissions to use {ctx.command}")
 
     else:
-        log_event(f'An Error Occurred! - [Error: {error} | Command: {ctx.command} | Author: {ctx.author}]',
-                  logging.CRITICAL)
+        log_event(f'An Error Occurred! - [Error: {error} | Command: {ctx.command} | Author: {ctx.author}'
+                  f' | Server: {ctx.guild}]', logging.CRITICAL)
 
 
 @elfbot.event

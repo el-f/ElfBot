@@ -29,6 +29,7 @@ class PrefixDBHandler(commands.Cog):
     # On Leaving Server
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
+        log_event(f"left the server '{guild}'")
         if db.get(PREFIXES_DB_NAME) is not None:
             prefixes_for_servers = json.loads(db.get(PREFIXES_DB_NAME).decode('utf-8'))
             try:
