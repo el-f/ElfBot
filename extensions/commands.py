@@ -85,6 +85,11 @@ class AdminCommands(commands.Cog):
     async def invite(self, ctx):
         await ctx.send(f'{ctx.author.mention} Invite me to your server here:\nhttps://bit.ly/31cs0qz')
 
+    @commands.command(brief="Get the number of servers the bot is moderating")
+    async def deployment(self, ctx):
+        await ctx.send(f'{ctx.author.mention}'
+                       f' {self.bot.user.name} Is Currently Moderating {len(self.bot.guilds)} Servers')
+
 
 # expected function for outside calling function 'load_extension()'
 def setup(_bot):

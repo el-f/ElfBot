@@ -23,12 +23,12 @@ async def on_command_error(ctx, error):
         await ctx.send(f'Please use the command with the required argument: <{error.param}>')
 
     elif isinstance(error, commands.MissingPermissions):
-        log_event(f'{ctx.author} tried using a restricted command ({ctx.command}) [server={ctx.guild}]', logging.WARN)
+        log_event(f"<server='{ctx.guild}'> {ctx.author} tried using a restricted command ({ctx.command})", logging.WARN)
         await ctx.send(f"{ctx.author.mention} you don't have enough permissions to use {ctx.command}")
 
     else:
-        log_event(f'An Error Occurred! - [Error: {error} | Command: {ctx.command} | Author: {ctx.author}'
-                  f' | Server: {ctx.guild}]', logging.CRITICAL)
+        log_event(f"<server='{ctx.guild}'> An Error Occurred! - [Error: {error} | Command: {ctx.command} |"
+                  f" Author: {ctx.author}]", logging.CRITICAL)
 
 
 @elfbot.event
@@ -42,7 +42,8 @@ async def on_message(message):
         await message.channel.send(f'{author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info')
 
     elif message and not in_music_channel(message) and is_music_related(message):
-        log_event(f'Caught unauthorized music related message: {message.content} by {message.author}')
+        log_event(f"<server='{message.guild}'> Caught unauthorized music related message:"
+                  f" {message.content} by {message.author}")
         music_channel = elfbot.get_channel(get_music_channel_id_for_guild_id(message.guild.id))
         await message.delete()
         if message.embeds:
