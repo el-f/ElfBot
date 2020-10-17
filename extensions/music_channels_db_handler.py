@@ -1,14 +1,14 @@
 import json
 from discord.ext import commands
-from utils.utils import log_event, db, MUSIC_CH_DB_NAME
+from utils.utils import log_event, db, MUSIC_CH_DB_KEY
 
 
-def remove_server(gid):
-    if db.get(MUSIC_CH_DB_NAME) is not None:
-        music_channels = json.loads(db.get(MUSIC_CH_DB_NAME).decode('utf-8'))
+def remove_server(guild_id):
+    if db.get(MUSIC_CH_DB_KEY) is not None:
+        music_channels = json.loads(db.get(MUSIC_CH_DB_KEY).decode('utf-8'))
         try:
-            music_channels.pop(str(gid))
-            db.set(MUSIC_CH_DB_NAME, json.dumps(music_channels))
+            music_channels.pop(str(guild_id))
+            db.set(MUSIC_CH_DB_KEY, json.dumps(music_channels))
         except KeyError:
             pass
 
@@ -29,13 +29,13 @@ class MusicChannelsDBHandler(commands.Cog):
     @commands.command(brief="Set a text channel to a music spam channel")
     @commands.has_permissions(administrator=True)
     async def setmusic(self, ctx):
-        if db.get(MUSIC_CH_DB_NAME) is None:
+        if db.get(MUSIC_CH_DB_KEY) is None:
             music_channels = {}
         else:
-            music_channels = json.loads(db.get(MUSIC_CH_DB_NAME).decode('utf-8'))
+            music_channels = json.loads(db.get(MUSIC_CH_DB_KEY).decode('utf-8'))
 
         music_channels[str(ctx.guild.id)] = ctx.channel.id
-        db.set(MUSIC_CH_DB_NAME, json.dumps(music_channels))
+        db.set(MUSIC_CH_DB_KEY, json.dumps(music_channels))
 
         message = f"{ctx.channel.name} is now set as the music spam channel for the server '{ctx.guild}'"
         log_event(message)

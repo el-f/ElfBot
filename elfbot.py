@@ -10,10 +10,9 @@ elfbot = commands.Bot(command_prefix=get_prefix)  # callable prefix - invoked on
 
 @elfbot.event
 async def on_ready():
-    await elfbot.change_presence(activity=discord.Activity(name='for a mention',
-                                                           type=discord.ActivityType.watching
-                                                           )
-                                 )
+    await elfbot.change_presence(
+        activity=discord.Activity(name='for music spam 👀', type=discord.ActivityType.watching)
+    )
     log_event(f'{elfbot.user} is Online')
 
 
@@ -41,15 +40,14 @@ async def on_message(message):
         author = message.author
         await message.channel.send(f'{author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info')
 
-    elif message and not in_music_channel(message) and is_music_related(message):
-        log_event(f"<server='{message.guild}'> Caught unauthorized music related message:"
-                  f" {message.content} by {message.author}")
-        music_channel = elfbot.get_channel(get_music_channel_id_for_guild_id(message.guild.id))
+    elif message and is_music_related(message) and not in_music_channel(message):
         await message.delete()
+        log_event(f"<server='{message.guild}'> Caught unauthorized music related message by {message.author}")
+        music_channel = elfbot.get_channel(get_music_channel_id_for_guild_id(message.guild.id))
         if message.embeds:
             for embed in message.embeds:
                 await music_channel.send(embed=embed)
-        else:
+        if message.content:
             await music_channel.send(message.content)
 
     else:
