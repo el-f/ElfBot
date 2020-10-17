@@ -80,7 +80,7 @@ def is_music_related(message: Message):
 
     msg = str(message.content)[1:]
     music_related_commands = [
-        'play ',
+        'play',
         'skip',
         'queue',
         'next',
