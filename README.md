@@ -12,8 +12,8 @@ A Simple Discord Bot For Handling Music Bots' Spam
       - Fork this repo
       - Create a new ```heroku``` app, link it to your fork and enable automatic deploys
       - Under the app's settings add a config var ```DISCORD_BOT_TOKEN``` and give it your bot user token as a value
-      - Under the app's resources tab enable the worker
       - Under the app's resources tab search for and install the ```Redis To Go``` add-on
+      - Under the app's resources tab enable the worker
       - Invite the bot to a server you manage
   - Or Using My Deployed Bot:
     - https://bit.ly/31cs0qz
