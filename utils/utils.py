@@ -78,7 +78,7 @@ def is_music_related(message: Message):
         if author == bot:
             return True
 
-    msg = str(message.content)[1:]
+    msg = str(message.content)[1:].lower()
     music_related_commands = [
         'play',
         'skip',
@@ -103,7 +103,7 @@ def is_music_related(message: Message):
         'volume'
     ]
     for command in music_related_commands:
-        if msg.lower().startswith(command):
+        if msg.startswith(command):
             return True
 
     return False
