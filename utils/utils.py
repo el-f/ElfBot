@@ -103,7 +103,7 @@ def is_music_related(message: Message):
         'volume'
     ]
     for command in music_related_commands:
-        if msg.startswith(command):
+        if msg.lower().startswith(command):
             return True
 
     return False
