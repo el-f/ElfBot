@@ -40,7 +40,7 @@ class ExtraCommands(commands.Cog):
             "Outlook not so good.",
             "Very doubtful."
         ]
-        pf = get_prefix_for_guild_id(ctx.guild)
+        pf = get_prefix_for_guild_id(ctx.guild.id)
         await ctx.send(
             f"{ctx.author.mention}\nPlease Enter a Question After '{pf}8ball'\nFor Example: '{pf}8ball are you dumb?'"
             if question is None else
