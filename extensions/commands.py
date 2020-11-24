@@ -1,5 +1,5 @@
 from discord.ext import commands
-from utils.utils import log_event
+from utils.utils import log_event, get_prefix_for_guild_id
 import random
 
 
@@ -40,7 +40,7 @@ class ExtraCommands(commands.Cog):
             "Outlook not so good.",
             "Very doubtful."
         ]
-        pf = self.bot.command_prefix
+        pf = get_prefix_for_guild_id(ctx.guild)
         await ctx.send(
             f"{ctx.author.mention}\nPlease Enter a Question After '{pf}8ball'\nFor Example: '{pf}8ball are you dumb?'"
             if question is None else
