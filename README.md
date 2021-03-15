@@ -1,8 +1,14 @@
 # ElfBot [![CodeFactor](https://www.codefactor.io/repository/github/elfein7night/elfbot/badge)](https://www.codefactor.io/repository/github/elfein7night/elfbot)
-A Simple Discord Bot For Handling Music Bots' Spam
+A Simple Discord Bot For Handling Music Bots' Spam.
+
+All music related messages are redirected to the server's dedicated music channel.
+
+The bot communicates with a Redis database holding all the servers' prefixes + music channels
 
 ##### Usage:
-  - Deploying Your Own Bot:
+  - Use My Deployed Bot:
+    - https://bit.ly/31cs0qz
+  - Or Deploy Your Own Bot:
     - Self Hosted:
       - Add a ```token``` file to the utils folder with your bot user token
       - Add a ```db_url``` file to the utils folder with a ```redis://...``` redis DB URL
@@ -15,7 +21,6 @@ A Simple Discord Bot For Handling Music Bots' Spam
       - Under the app's resources tab search for and install the ```Redis To Go``` add-on
       - Under the app's resources tab enable the worker
       - Invite the bot to a server you manage
-  - Or Using My Deployed Bot:
-    - https://bit.ly/31cs0qz
+      - 
   - Go into the designated music spam text channel and enter the command ```?setmusic``` (```?``` - prefix)
   - Enjoy cleaner text channels without all the spam from music bots related messages
