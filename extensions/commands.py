@@ -1,21 +1,10 @@
 from discord.ext.commands import *
-from utils.utils import log_event, get_prefix_for_guild_id
+from utils.utils import get_prefix_for_guild_id
 import random
+from extensions.extension_templates import Extension
 
 
-# a simple example of a custom check for a command
-def is_creator(ctx: Context):
-    return 'elfein' in ctx.author.name.lower()
-
-
-class ExtraCommands(Cog):
-    def __init__(self, _bot):
-        self.bot = _bot
-
-    @Cog.listener()
-    async def on_ready(self):
-        log_event(f'{self.qualified_name} extension loaded')
-
+class ExtraCommands(Extension):
     @command(aliases=['8ball'], brief="Play a game of 8ball")
     async def _8ball(self, ctx: Context, *, question=None):
         responses = [
@@ -48,14 +37,12 @@ class ExtraCommands(Cog):
         )
 
 
-class AdminCommands(Cog):
-    def __init__(self, _bot):
-        self.bot = _bot
+# a simple example of a custom check for a command
+def is_creator(ctx: Context):
+    return 'elfein' in ctx.author.name.lower()
 
-    @Cog.listener()
-    async def on_ready(self):
-        log_event(f'{self.qualified_name} extension loaded')
 
+class AdminCommands(Extension):
     @command(brief="Get the bot's latency")
     async def ping(self, ctx: Context):
         await ctx.send(f'{ctx.author.mention} latency: ({round(self.bot.latency * 1000)}ms)')

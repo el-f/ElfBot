@@ -56,7 +56,7 @@ async def on_message(message: Message):
 
 # load all extensions
 for filename in os.listdir('extensions'):
-    if filename.endswith('.py'):
+    if filename.endswith('.py') and 'template' not in filename:
         elfbot.load_extension(f'extensions.{filename[:-3]}')
 
 elfbot.run(get_token())

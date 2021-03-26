@@ -5,9 +5,9 @@ import logging
 from datetime import datetime
 from discord.message import Message
 
-######################
-# CONSTANTS + CONFIG #
-######################
+###################################
+# CONSTANTS + CONFIG + UTIL FUNCS #
+###################################
 
 DEFAULT_PREFIX = '?'
 PREFIXES_DB_KEY = 'prefixes_for_servers'
@@ -16,8 +16,8 @@ MUSIC_CH_DB_KEY = 'music_channels_for_servers'
 logging.basicConfig(filename='events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
 
 
-def log_event(string: str, level=logging.INFO):
-    msg = f'{datetime.now().strftime("[%d/%m/%y | %H:%M:%S]")} - {string}'
+def log_event(description: str, level=logging.INFO):
+    msg = f'{datetime.now().strftime("[%d/%m/%y | %H:%M:%S]")} - {description}'
     logging.log(level=level, msg=msg)
     print(msg)
 
@@ -27,7 +27,8 @@ def get_db_url():
     the db_url is in a private file called "db_url"
     first we try to find the token file for case of running from individual machine
     if file not found we look for environment var for case of running from a deployed server
-    :return: db_url (string)
+
+    :return: redis db_url (string)
     """
     try:
         db_url = open("utils/db_url", "r").read()
@@ -46,7 +47,8 @@ def get_token():
     the token is in a private file called "token"
     first we try to find the token file for case of running from individual machine
     if file not found we look for environment var for case of running from a deployed server
-    :return: token (string)
+
+    :return: discord user token (string)
     """
     try:
         token = open("utils/token", "r").read()
@@ -57,9 +59,20 @@ def get_token():
         return os.getenv('DISCORD_BOT_TOKEN')
 
 
-######################
-#   MUSIC HANDLING   #
-######################
+def get_dict(raw_json: bytes) -> dict:
+    """
+    In the server our dictionaries are stored as raw bytes,
+    this function returns them decoded and transformed back as dictionaries.
+
+    :param raw_json: A JSON represented as raw bytes string
+    :return: A dictionary from the decoded bytes
+    """
+    return json.loads(raw_json.decode('utf-8'))
+
+
+#############################
+#       MUSIC HANDLING      #
+#############################
 
 MUSIC_BOTS = [
     # top 5 most used music bots
@@ -130,22 +143,22 @@ def in_music_channel(message: Message):
 
 
 def get_music_channel_id_for_guild_id(guild_id: int):
-    if db.get(MUSIC_CH_DB_KEY) is None:
+    music_channels_raw_dict = db.get(MUSIC_CH_DB_KEY)
+    if music_channels_raw_dict is None:
         raise KeyError
 
-    music_channels = json.loads(db.get(MUSIC_CH_DB_KEY).decode('utf-8'))
-    return music_channels[str(guild_id)]
+    return get_dict(music_channels_raw_dict)[str(guild_id)]
 
 
-######################
-#   PREFIX HANDLING  #
-######################
+############################
+#      PREFIX HANDLING     #
+############################
 
 def get_prefix_for_guild_id(guild_id: int):
-    if db.get(PREFIXES_DB_KEY) is not None:
+    prefixes_raw_dict = db.get(PREFIXES_DB_KEY)
+    if prefixes_raw_dict is not None:
         try:
-            prefixes = json.loads(db.get(PREFIXES_DB_KEY).decode('utf-8'))
-            return prefixes[str(guild_id)]
+            return get_dict(prefixes_raw_dict)[str(guild_id)]
         except KeyError:
             log_event(f"Failed trying to fetch prefix for server id {guild_id}", logging.CRITICAL)
             return DEFAULT_PREFIX
