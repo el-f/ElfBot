@@ -10,8 +10,8 @@ The bot communicates with a Redis database holding all the servers' prefixes + m
     - https://tinyurl.com/JoinElfBot
   - Or Deploy Your Own Bot:
     - Self Hosted:
-      - Add a ```token``` file to the utils folder with your bot user token
-      - Add a ```db_url``` file to the utils folder with a ```redis://...``` redis DB URL
+      - Add a file named ```token``` to the utils folder with your bot user token
+      - Add a file named ```db_url``` to the utils folder with a ```redis://...``` redis DB URL
       - Run ```elfbot.py```
       - Invite the bot to a server you manage
     - Heroku:
@@ -21,6 +21,5 @@ The bot communicates with a Redis database holding all the servers' prefixes + m
       - Under the app's resources tab search for and install the ```Redis To Go``` add-on
       - Under the app's resources tab enable the worker
       - Invite the bot to a server you manage
-      - 
   - Go into the designated music spam text channel and enter the command ```?setmusic``` (```?``` - prefix)
   - Enjoy cleaner text channels without all the spam from music bots related messages
