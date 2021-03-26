@@ -4,10 +4,11 @@ from utils.utils import log_event, PREFIXES_DB_KEY, DEFAULT_PREFIX, db
 
 
 def set_prefix_for_server(guild_id: int, prefix=DEFAULT_PREFIX):
-    if db.get(PREFIXES_DB_KEY) is None:
+    prefixes_raw_dict = db.get(PREFIXES_DB_KEY)
+    if prefixes_raw_dict is None:
         prefixes_for_servers = {}
     else:
-        prefixes_for_servers = json.loads(db.get(PREFIXES_DB_KEY).decode('utf-8'))
+        prefixes_for_servers = json.loads(prefixes_raw_dict.decode('utf-8'))
 
     prefixes_for_servers[str(guild_id)] = prefix
     db.set(PREFIXES_DB_KEY, json.dumps(prefixes_for_servers))
@@ -31,8 +32,9 @@ class PrefixDBHandler(Cog):
     @Cog.listener()
     async def on_guild_remove(self, guild: Context.guild):
         log_event(f"left the server '{guild}'")
-        if db.get(PREFIXES_DB_KEY) is not None:
-            prefixes_for_servers = json.loads(db.get(PREFIXES_DB_KEY).decode('utf-8'))
+        prefixes_raw_dict = db.get(PREFIXES_DB_KEY)
+        if prefixes_raw_dict is not None:
+            prefixes_for_servers = json.loads(prefixes_raw_dict.decode('utf-8'))
             try:
                 prefixes_for_servers.pop(str(guild.id))
                 db.set(PREFIXES_DB_KEY, json.dumps(prefixes_for_servers))

@@ -8,7 +8,7 @@ elfbot = Bot(command_prefix=get_prefix)  # callable prefix - invoked on every me
 @elfbot.event
 async def on_ready():
     await elfbot.change_presence(
-        activity=Activity(name='for music spam 👀', type=ActivityType.watching)
+        activity=Activity(type=ActivityType.watching, name='for music spam 👀')
     )
     log_event(f'{elfbot.user} is Online')
 

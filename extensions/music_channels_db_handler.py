@@ -4,8 +4,9 @@ from utils.utils import log_event, db, MUSIC_CH_DB_KEY
 
 
 def remove_server(guild_id: int):
-    if db.get(MUSIC_CH_DB_KEY) is not None:
-        music_channels = json.loads(db.get(MUSIC_CH_DB_KEY).decode('utf-8'))
+    music_ch_raw_dict = db.get(MUSIC_CH_DB_KEY)
+    if music_ch_raw_dict is not None:
+        music_channels = json.loads(music_ch_raw_dict.decode('utf-8'))
         try:
             music_channels.pop(str(guild_id))
             db.set(MUSIC_CH_DB_KEY, json.dumps(music_channels))
@@ -29,10 +30,11 @@ class MusicChannelsDBHandler(Cog):
     @command(brief="Set a text channel to a music spam channel")
     @has_permissions(administrator=True)
     async def setmusic(self, ctx: Context):
-        if db.get(MUSIC_CH_DB_KEY) is None:
+        music_ch_raw_dict = db.get(MUSIC_CH_DB_KEY)
+        if music_ch_raw_dict is None:
             music_channels = {}
         else:
-            music_channels = json.loads(db.get(MUSIC_CH_DB_KEY).decode('utf-8'))
+            music_channels = json.loads(music_ch_raw_dict.decode('utf-8'))
 
         music_channels[str(ctx.guild.id)] = ctx.channel.id
         db.set(MUSIC_CH_DB_KEY, json.dumps(music_channels))
