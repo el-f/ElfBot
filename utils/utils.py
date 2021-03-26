@@ -61,7 +61,7 @@ def get_token():
 
 def get_dict(raw_json: bytes) -> dict:
     """
-    In the server our dictionaries are stored as raw bytes,
+    In the database our dictionaries are stored as raw bytes,
     this function returns them decoded and transformed back as dictionaries.
 
     :param raw_json: A JSON represented as raw bytes string
