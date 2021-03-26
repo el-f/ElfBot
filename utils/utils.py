@@ -1,9 +1,13 @@
 import json
 import os
 import redis
-from datetime import datetime
 import logging
+from datetime import datetime
 from discord.message import Message
+
+######################
+# CONSTANTS + CONFIG #
+######################
 
 DEFAULT_PREFIX = '?'
 PREFIXES_DB_KEY = 'prefixes_for_servers'
@@ -12,7 +16,7 @@ MUSIC_CH_DB_KEY = 'music_channels_for_servers'
 logging.basicConfig(filename='events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
 
 
-def log_event(string, level=logging.INFO):
+def log_event(string: str, level=logging.INFO):
     msg = f'{datetime.now().strftime("[%d/%m/%y | %H:%M:%S]")} - {string}'
     logging.log(level=level, msg=msg)
     print(msg)
@@ -53,63 +57,71 @@ def get_token():
         return os.getenv('DISCORD_BOT_TOKEN')
 
 
+######################
+#   MUSIC HANDLING   #
+######################
+
+MUSIC_BOTS = [
+    # top 5 most used music bots
+    'Groovy#7254',
+    'Rythm#3722',
+    'FredBoat♪♪#7284',
+    '24/7 🔊#6493',
+    'Vexera#8487'
+]
+
+MUSIC_RELATED_COMMANDS = [
+    'play',
+    'skip',
+    'queue',
+    'next',
+    'loop',
+    'resume',
+    'pause',
+    'p ',
+    'fs',
+    'lyrics',
+    'stop',
+    'join',
+    'leave',
+    'search',
+    'shuffle',
+    'seek',
+    'np',
+    'repeat',
+    'previous',
+    'replay',
+    'volume'
+]
+
+HELP_COMMAND_TRIGGER = 'list of commands'
+
+
 def is_music_related(message: Message):
-    help_command_trigger = 'list of commands'
     # for case of 'help' command
     if message.embeds:
         for embed in message.embeds:
-            if help_command_trigger in embed.description:
+            if HELP_COMMAND_TRIGGER in embed.description:
                 return False
             if embed.fields:
                 for field in embed.fields:
-                    if help_command_trigger in str(field):
+                    if HELP_COMMAND_TRIGGER in str(field):
                         return False
 
     author = str(message.author)
-    music_bots = [
-        # top 5 most used music bots
-        'Groovy#7254',
-        'Rythm#3722',
-        'FredBoat♪♪#7284',
-        '24/7 🔊#6493',
-        'Vexera#8487'
-    ]
-    for bot in music_bots:
+    for bot in MUSIC_BOTS:
         if author == bot:
             return True
 
-    msg = str(message.content)[1:].lower()
-    music_related_commands = [
-        'play',
-        'skip',
-        'queue',
-        'next',
-        'loop',
-        'resume',
-        'pause',
-        'p ',
-        'fs',
-        'lyrics',
-        'stop',
-        'join',
-        'leave',
-        'search',
-        'shuffle',
-        'seek',
-        'np',
-        'repeat',
-        'previous',
-        'replay',
-        'volume'
-    ]
-    for command in music_related_commands:
+    msg = str(message.content)[1:].lower()  # remove prefix, insure case matching
+    for command in MUSIC_RELATED_COMMANDS:
         if msg.startswith(command):
             return True
 
     return False
 
 
-def in_music_channel(message):
+def in_music_channel(message: Message):
     try:
         return message.channel.id == get_music_channel_id_for_guild_id(message.guild.id)
     except KeyError:
@@ -117,7 +129,7 @@ def in_music_channel(message):
         return True  # if there is no music channel then all channels are music channels
 
 
-def get_music_channel_id_for_guild_id(guild_id):
+def get_music_channel_id_for_guild_id(guild_id: int):
     if db.get(MUSIC_CH_DB_KEY) is None:
         raise KeyError
 
@@ -125,7 +137,11 @@ def get_music_channel_id_for_guild_id(guild_id):
     return music_channels[str(guild_id)]
 
 
-def get_prefix_for_guild_id(guild_id):
+######################
+#   PREFIX HANDLING  #
+######################
+
+def get_prefix_for_guild_id(guild_id: int):
     if db.get(PREFIXES_DB_KEY) is not None:
         try:
             prefixes = json.loads(db.get(PREFIXES_DB_KEY).decode('utf-8'))
@@ -137,5 +153,5 @@ def get_prefix_for_guild_id(guild_id):
     return DEFAULT_PREFIX
 
 
-def get_prefix(bot, message: Message):  # 'bot' arg is passed but not used
+def get_prefix(bot, message: Message):  # bot is passed but not needed (type: commands.Bot)
     return get_prefix_for_guild_id(message.guild.id)

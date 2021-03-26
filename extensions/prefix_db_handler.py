@@ -1,9 +1,9 @@
 import json
-from discord.ext import commands
+from discord.ext.commands import Cog, Context, command, has_permissions
 from utils.utils import log_event, PREFIXES_DB_KEY, DEFAULT_PREFIX, db
 
 
-def set_prefix_for_server(guild_id, prefix=DEFAULT_PREFIX):
+def set_prefix_for_server(guild_id: int, prefix=DEFAULT_PREFIX):
     if db.get(PREFIXES_DB_KEY) is None:
         prefixes_for_servers = {}
     else:
@@ -13,23 +13,23 @@ def set_prefix_for_server(guild_id, prefix=DEFAULT_PREFIX):
     db.set(PREFIXES_DB_KEY, json.dumps(prefixes_for_servers))
 
 
-class PrefixDBHandler(commands.Cog):
+class PrefixDBHandler(Cog):
     def __init__(self, _bot):
         self.bot = _bot
 
-    @commands.Cog.listener()
+    @Cog.listener()
     async def on_ready(self):
         log_event(f'{self.qualified_name} extension loaded')
 
     # On First Joining Server
-    @commands.Cog.listener()
-    async def on_guild_join(self, guild):
+    @Cog.listener()
+    async def on_guild_join(self, guild: Context.guild):
         set_prefix_for_server(guild.id)
         log_event(f'Joined the server: {guild.name} - {guild.id}')
 
     # On Leaving Server
-    @commands.Cog.listener()
-    async def on_guild_remove(self, guild):
+    @Cog.listener()
+    async def on_guild_remove(self, guild: Context.guild):
         log_event(f"left the server '{guild}'")
         if db.get(PREFIXES_DB_KEY) is not None:
             prefixes_for_servers = json.loads(db.get(PREFIXES_DB_KEY).decode('utf-8'))
@@ -39,9 +39,9 @@ class PrefixDBHandler(commands.Cog):
             except KeyError:
                 pass
 
-    @commands.command(brief="Change the bot's prefix for this server")
-    @commands.has_permissions(administrator=True)
-    async def pf(self, ctx, prefix):
+    @command(brief="Change the bot's prefix for this server")
+    @has_permissions(administrator=True)
+    async def pf(self, ctx: Context, prefix):
         set_prefix_for_server(ctx.guild.id, prefix)
         message = f"set '{prefix}' as the prefix for the server '{ctx.guild}'"
         log_event(message)

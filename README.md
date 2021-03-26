@@ -7,7 +7,7 @@ The bot communicates with a Redis database holding all the servers' prefixes + m
 
 ##### Usage:
   - Use My Deployed Bot:
-    - https://bit.ly/31cs0qz
+    - https://tinyurl.com/JoinElfBot
   - Or Deploy Your Own Bot:
     - Self Hosted:
       - Add a ```token``` file to the utils folder with your bot user token

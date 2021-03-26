@@ -1,27 +1,24 @@
-from discord.ext import commands
-from utils.utils import is_music_related, log_event, get_prefix, get_prefix_for_guild_id, in_music_channel, \
-    get_music_channel_id_for_guild_id, get_token
-import discord
-import os
-import logging
+from discord.ext.commands import Bot, Context, MissingRequiredArgument, MissingPermissions
+from discord import Activity, ActivityType
+from utils.utils import *
 
-elfbot = commands.Bot(command_prefix=get_prefix)  # callable prefix - invoked on every message
+elfbot = Bot(command_prefix=get_prefix)  # callable prefix - invoked on every message
 
 
 @elfbot.event
 async def on_ready():
     await elfbot.change_presence(
-        activity=discord.Activity(name='for music spam 👀', type=discord.ActivityType.watching)
+        activity=Activity(name='for music spam 👀', type=ActivityType.watching)
     )
     log_event(f'{elfbot.user} is Online')
 
 
 @elfbot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.MissingRequiredArgument):
+async def on_command_error(ctx: Context, error):
+    if isinstance(error, MissingRequiredArgument):
         await ctx.send(f'Please use the command with the required argument: <{error.param}>')
 
-    elif isinstance(error, commands.MissingPermissions):
+    elif isinstance(error, MissingPermissions):
         log_event(f"<server='{ctx.guild}'> {ctx.author} tried using a restricted command ({ctx.command})", logging.WARN)
         await ctx.send(f"{ctx.author.mention} you don't have enough permissions to use {ctx.command}")
 
@@ -31,7 +28,10 @@ async def on_command_error(ctx, error):
 
 
 @elfbot.event
-async def on_message(message):
+async def on_message(message: Message):
+    if message is None:
+        return
+
     if message.author == elfbot.user:
         return
 
@@ -40,7 +40,7 @@ async def on_message(message):
         author = message.author
         await message.channel.send(f'{author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info')
 
-    elif message and is_music_related(message) and not in_music_channel(message):
+    elif is_music_related(message) and not in_music_channel(message):
         await message.delete()
         log_event(f"<server='{message.guild}'> Caught unauthorized music related message by {message.author}")
         music_channel = elfbot.get_channel(get_music_channel_id_for_guild_id(message.guild.id))
