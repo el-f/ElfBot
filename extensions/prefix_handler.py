@@ -1,21 +1,19 @@
+import logging
+from discord import Message
 from discord.ext.commands import Cog, Context, command, has_permissions
-from utils.utils import log_event
+from utils.utils import log_event, db, get_dict
 from extensions.extension_templates import DatabaseHandler
+
+DEFAULT_PREFIX = '?'
+PREFIXES_DB_KEY = 'prefixes_for_servers'
 
 
 class PrefixDBHandler(DatabaseHandler):
     # On First Joining Server
     @Cog.listener()
     async def on_guild_join(self, guild: Context.guild):
-        from utils.utils import DEFAULT_PREFIX
         self.set_value_for_server(guild_id=guild.id, value=DEFAULT_PREFIX)
         log_event(f'Joined the server: {guild.name} - {guild.id}')
-
-    # On Leaving Server
-    @Cog.listener()
-    async def on_guild_remove(self, guild: Context.guild):
-        self.remove_server(guild_id=guild.id)
-        log_event(f"left the server '{guild}'")
 
     @command(brief="Change the bot's prefix for this server")
     @has_permissions(administrator=True)
@@ -26,7 +24,26 @@ class PrefixDBHandler(DatabaseHandler):
         await ctx.send(f'{ctx.author.mention} {message}')
 
 
+############################
+#      STATIC METHODS      #
+############################
+
+def get_prefix_for_guild_id(guild_id: int):
+    prefixes_raw_dict = db.get(PREFIXES_DB_KEY)
+    if prefixes_raw_dict is not None:
+        try:
+            return get_dict(prefixes_raw_dict)[str(guild_id)]
+        except KeyError:
+            log_event(f"Failed trying to fetch prefix for server id {guild_id}", logging.CRITICAL)
+            return DEFAULT_PREFIX
+    log_event(f"Error Fetching prefixes DB", logging.CRITICAL)
+    return DEFAULT_PREFIX
+
+
+def get_prefix(bot, message: Message):  # bot is passed but not needed (type: commands.Bot)
+    return get_prefix_for_guild_id(message.guild.id)
+
+
 # expected function for outside calling function 'load_extension()'
 def setup(_bot):
-    from utils.utils import PREFIXES_DB_KEY
     _bot.add_cog(PrefixDBHandler(_bot, PREFIXES_DB_KEY))

@@ -1,10 +1,10 @@
 import json
-from discord.ext.commands import Cog
+from discord.ext.commands import Cog, Bot, Context
 from utils.utils import log_event, db, get_dict
 
 
 class Extension(Cog):
-    def __init__(self, _bot):
+    def __init__(self, _bot: Bot):
         self.bot = _bot
 
     @Cog.listener()
@@ -13,7 +13,7 @@ class Extension(Cog):
 
 
 class DatabaseHandler(Extension):
-    def __init__(self, _bot, db_key):
+    def __init__(self, _bot: Bot, db_key: str):
         super().__init__(_bot)
         self.DB_KEY = db_key
 
@@ -36,3 +36,9 @@ class DatabaseHandler(Extension):
                 db.set(self.DB_KEY, json.dumps(dictionary))
             except KeyError:
                 pass
+
+    # On Leaving Server
+    @Cog.listener()
+    async def on_guild_remove(self, guild: Context.guild):
+        self.remove_server(guild_id=guild.id)
+        log_event(f"left the server '{guild}'")

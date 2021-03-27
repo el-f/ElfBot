@@ -1,7 +1,7 @@
 from discord.ext.commands import *
-from utils.utils import get_prefix_for_guild_id
 import random
 from extensions.extension_templates import Extension
+from extensions.prefix_handler import get_prefix_for_guild_id
 
 
 class ExtraCommands(Extension):

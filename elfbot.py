@@ -1,5 +1,7 @@
 from discord.ext.commands import Bot, Context, MissingRequiredArgument, MissingPermissions
-from discord import Activity, ActivityType
+from discord import Activity, ActivityType, Message
+from extensions.music_handler import is_music_related, in_music_channel, get_music_channel_id_for_guild_id
+from extensions.prefix_handler import get_prefix, get_prefix_for_guild_id
 from utils.utils import *
 
 elfbot = Bot(command_prefix=get_prefix)  # callable prefix - invoked on every message
