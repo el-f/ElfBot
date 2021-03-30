@@ -29,16 +29,16 @@ class MusicChannelsDBHandler(DatabaseHandler):
 #      STATICS      #
 #####################
 
-MUSIC_BOTS = [
+MUSIC_BOTS = {
     # top 5 most used music bots
     'Groovy#7254',
     'Rythm#3722',
     'FredBoat♪♪#7284',
     '24/7 🔊#6493',
     'Vexera#8487'
-]
+}
 
-MUSIC_RELATED_COMMANDS = [
+MUSIC_RELATED_COMMANDS = {
     'play',
     'skip',
     'queue',
@@ -60,7 +60,7 @@ MUSIC_RELATED_COMMANDS = [
     'previous',
     'replay',
     'volume'
-]
+}
 
 HELP_COMMAND_TRIGGER = 'list of commands'
 
