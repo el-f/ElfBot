@@ -76,11 +76,10 @@ def is_music_related(message: Message):
                     if HELP_COMMAND_TRIGGER in str(field):
                         return False
 
-    author = str(message.author)
-    if author in MUSIC_BOTS:
+    if str(message.author) in MUSIC_BOTS:
         return True
 
-    msg = str(message.content)[1:].lower()  # remove prefix, insure case matching
+    msg = message.content[1:].lower()  # remove prefix, insure case matching
     for cmd in MUSIC_RELATED_COMMANDS:
         if msg.startswith(cmd):
             return True
