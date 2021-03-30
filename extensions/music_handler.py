@@ -38,7 +38,7 @@ MUSIC_BOTS = {
     'Vexera#8487'
 }
 
-MUSIC_RELATED_COMMANDS = {
+MUSIC_RELATED_COMMANDS = [
     'play',
     'skip',
     'queue',
@@ -60,7 +60,7 @@ MUSIC_RELATED_COMMANDS = {
     'previous',
     'replay',
     'volume'
-}
+]
 
 HELP_COMMAND_TRIGGER = 'list of commands'
 
@@ -77,9 +77,8 @@ def is_music_related(message: Message):
                         return False
 
     author = str(message.author)
-    for bot in MUSIC_BOTS:
-        if author == bot:
-            return True
+    if author in MUSIC_BOTS:
+        return True
 
     msg = str(message.content)[1:].lower()  # remove prefix, insure case matching
     for cmd in MUSIC_RELATED_COMMANDS:
