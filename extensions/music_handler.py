@@ -60,7 +60,9 @@ MUSIC_RELATED_COMMANDS = {
     'clear',
     'dc',
     'disconnect',
+    'ff',
     'fs',
+    'fwd',
     'goto',
     'join',
     'jump',
@@ -97,8 +99,6 @@ MUSIC_RELATED_COMMANDS = {
 # so we check one by one.
 MUSIC_RELATED_SPECIALS_CASES = [
     'fast forward',
-    'ff ',
-    'fwd ',
     'j ',
     'm ',
     'mv ',
