@@ -1,6 +1,8 @@
 import logging
 from discord import Message
 from discord.ext.commands import Context, command, has_permissions
+
+from extensions import commands
 from utils.utils import log_event, db, get_dict
 from extensions.extension_templates import DatabaseHandler
 
@@ -24,6 +26,20 @@ class MusicChannelsDBHandler(DatabaseHandler):
         log_event(event)
         await ctx.send(f'{ctx.author.mention} {event}')
 
+    @command(brief="Toggle special cases checking in music detection", hidden=True)
+    @commands.is_owner()
+    async def tsc(self, ctx: Context, flag: str = ""):
+        global CHECK_SPECIAL_CASES
+        await ctx.message.delete()
+        if len(flag) > 0:
+            if flag in {"true", "t", "y"}:
+                CHECK_SPECIAL_CASES = True
+            elif flag in {"false", "f", "n"}:
+                CHECK_SPECIAL_CASES = False
+            else:
+                await ctx.author.send(f"Invalid Flag Value: {flag}")
+        await ctx.author.send(f"CHECK_SPECIAL_CASES now set as {CHECK_SPECIAL_CASES}")
+
 
 #####################
 #      STATICS      #
@@ -38,29 +54,61 @@ MUSIC_BOTS = {
     'Vexera#8487'
 }
 
-MUSIC_RELATED_COMMANDS = [
-    'play',
-    'skip',
-    'queue',
-    'next',
-    'loop',
-    'resume',
-    'pause',
-    'p ',
+MUSIC_RELATED_COMMANDS = {
+    'announce',
+    'back',
+    'clear',
+    'dc',
+    'disconnect',
     'fs',
-    'lyrics',
-    'stop',
+    'goto',
     'join',
+    'jump',
     'leave',
-    'search',
-    'shuffle',
-    'seek',
+    'loop',
+    'lyrics',
+    'move',
+    'next',
     'np',
-    'repeat',
+    'pause',
+    'pf',
+    'play',
+    'prev',
     'previous',
+    'queue',
+    'remove',
+    'repeat',
     'replay',
-    'volume'
+    'reset',
+    'resume',
+    'rewind',
+    'rr',
+    'search',
+    'seek',
+    'shuffle',
+    'skip',
+    'song',
+    'stop',
+    'unpause',
+    'volume',
+}
+
+# special because of whitespace / multiple words, can't be in the set in a well implemented way
+# so we check one by one.
+MUSIC_RELATED_SPECIALS_CASES = [
+    'fast forward',
+    'ff ',
+    'fwd ',
+    'j ',
+    'm ',
+    'mv ',
+    'p ',
+    'q ',
+    'rw ',
+    's ',
 ]
+
+CHECK_SPECIAL_CASES = True
 
 HELP_COMMAND_TRIGGER = 'list of commands'
 
@@ -80,22 +128,28 @@ def is_music_related(message: Message):
         return True
 
     msg = message.content[1:].lower()  # remove prefix, insure case matching
-    for cmd in MUSIC_RELATED_COMMANDS:
-        if msg.startswith(cmd):
-            return True
+
+    # get first string
+    if msg.split()[0] in MUSIC_RELATED_COMMANDS:
+        return True
+
+    if CHECK_SPECIAL_CASES:
+        for sp in MUSIC_RELATED_SPECIALS_CASES:
+            if msg.startswith(sp):
+                return True
 
     return False
 
 
 def in_music_channel(message: Message):
     try:
-        return message.channel.id == get_music_channel_id_for_guild_id(message.guild.id)
+        return message.channel.id == get_music_channel_id_for_guild(message.guild.id)
     except KeyError:
         log_event(f"Failed trying to find a music channel for server '{message.guild}'", logging.WARN)
         return True  # if there is no music channel then all channels are music channels
 
 
-def get_music_channel_id_for_guild_id(guild_id: int):
+def get_music_channel_id_for_guild(guild_id: int):
     music_channels_raw_dict = db.get(MUSIC_CH_DB_KEY)
     if music_channels_raw_dict is None:
         raise KeyError

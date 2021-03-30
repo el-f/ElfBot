@@ -28,7 +28,7 @@ class PrefixDBHandler(DatabaseHandler):
 #      STATIC METHODS      #
 ############################
 
-def get_prefix_for_guild_id(guild_id: int):
+def get_prefix_for_guild(guild_id: int):
     prefixes_raw_dict = db.get(PREFIXES_DB_KEY)
     if prefixes_raw_dict is not None:
         try:
@@ -41,7 +41,7 @@ def get_prefix_for_guild_id(guild_id: int):
 
 
 def get_prefix(bot, message: Message):  # bot is passed but not needed (type: commands.Bot)
-    return get_prefix_for_guild_id(message.guild.id)
+    return get_prefix_for_guild(message.guild.id)
 
 
 # expected function for outside calling function 'load_extension()'

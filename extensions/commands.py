@@ -1,7 +1,7 @@
 from discord.ext.commands import *
 import random
 from extensions.extension_templates import Extension
-from extensions.prefix_handler import get_prefix_for_guild_id
+from extensions.prefix_handler import get_prefix_for_guild
 
 
 class ExtraCommands(Extension):
@@ -29,7 +29,7 @@ class ExtraCommands(Extension):
             "Outlook not so good.",
             "Very doubtful."
         ]
-        pf = get_prefix_for_guild_id(ctx.guild.id)
+        pf = get_prefix_for_guild(ctx.guild.id)
         await ctx.send(
             f"{ctx.author.mention}\nPlease Enter a Question After '{pf}8ball'\nFor Example: '{pf}8ball are you dumb?'"
             if question is None else
@@ -47,9 +47,9 @@ class AdminCommands(Extension):
     async def ping(self, ctx: Context):
         await ctx.send(f'{ctx.author.mention} latency: ({round(self.bot.latency * 1000)}ms)')
 
-    @command(brief="Clear previous messages. Can be called with a specific amount")
+    @command(aliases=['cm'], brief="Clear previous messages. Can be called with a specific amount")
     @has_permissions(manage_messages=True)
-    async def clear(self, ctx: Context, amount=1):  # default amount - delete last message
+    async def purge(self, ctx: Context, amount=1):  # default amount - delete last message
         await ctx.channel.purge(limit=amount + 1)  # +1 to delete itself as well
 
     # Example of Command-Specific Error Handling:
