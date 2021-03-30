@@ -117,7 +117,7 @@ def is_music_related(message: Message):
     # for case of 'help' command
     if message.embeds:
         for embed in message.embeds:
-            if HELP_COMMAND_TRIGGER in embed.description:
+            if embed.description and HELP_COMMAND_TRIGGER in embed.description:
                 return False
             if embed.fields:
                 for field in embed.fields:
