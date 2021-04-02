@@ -1,7 +1,10 @@
+import discord
+from discord.ext import commands
 from discord.ext.commands import *
 import random
 from extensions.extension_templates import Extension
 from extensions.prefix_handler import get_prefix_for_guild
+from utils.utils import EVENTS_LOG_FILE_NAME
 
 
 class ExtraCommands(Extension):
@@ -54,8 +57,8 @@ class AdminCommands(Extension):
 
     # Example of Command-Specific Error Handling:
     #
-    # @clear.error  # (@command_name.error)
-    # async def clear_error(self, ctx, error):
+    # @purge.error  # (@command_name.error)
+    # async def purge_error(self, ctx, error):
     #     pass
 
     # an example for a command with a custom check
@@ -76,6 +79,14 @@ class AdminCommands(Extension):
     async def deployment(self, ctx: Context):
         await ctx.send(f'{ctx.author.mention}'
                        f' {self.bot.user.name} Is Currently Moderating {len(self.bot.guilds)} Servers')
+
+    @command(aliases=['sl'], brief="Send Events log To Owner", hidden=True)
+    @commands.is_owner()
+    async def send_log_to_owner(self, ctx: Context):
+        await ctx.message.delete()
+        app_info = await self.bot.application_info()
+        owner = await self.bot.fetch_user(app_info.owner.id)
+        await owner.send(file=discord.File(EVENTS_LOG_FILE_NAME))
 
 
 # expected function for outside calling function 'load_extension()'

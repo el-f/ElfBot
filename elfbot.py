@@ -1,7 +1,5 @@
-import discord
 from discord.ext.commands import Bot, Context, MissingRequiredArgument, MissingPermissions
 from discord import Activity, ActivityType, Message
-from discord.ext import tasks
 from extensions.music_handler import is_music_related, in_music_channel, get_music_channel_id_for_guild
 from extensions.prefix_handler import get_prefix, get_prefix_for_guild
 from utils.utils import *
@@ -61,22 +59,9 @@ async def on_message(message: Message):
         await elfbot.process_commands(message)
 
 
-@tasks.loop(hours=24)
-async def send_log_to_owner():
-    app = await elfbot.application_info()
-    owner = await elfbot.fetch_user(app.owner.id)
-    await owner.send(file=discord.File('events.log'))
-
-
-@send_log_to_owner.before_loop
-async def send_log_before_loop():
-    await elfbot.wait_until_ready()
-
-
 # load all extensions
 for filename in os.listdir('extensions'):
     if filename.endswith('.py') and 'template' not in filename:
         elfbot.load_extension(f'extensions.{filename[:-3]}')
 
-send_log_to_owner.start()
 elfbot.run(get_token())

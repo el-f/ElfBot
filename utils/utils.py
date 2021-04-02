@@ -4,7 +4,8 @@ import redis
 import logging
 from datetime import datetime
 
-logging.basicConfig(filename='events.log', level=logging.INFO, format="<%(levelname)s> %(message)s")
+EVENTS_LOG_FILE_NAME = 'events.log'
+logging.basicConfig(filename=EVENTS_LOG_FILE_NAME, level=logging.INFO, format="<%(levelname)s> %(message)s")
 
 
 def log_event(description: str, level=logging.INFO):
@@ -59,3 +60,22 @@ def get_dict(raw_json: bytes) -> dict:
     :return: A dictionary from the decoded bytes
     """
     return json.loads(raw_json.decode('utf-8'))
+
+
+def get_bool(flag: str) -> bool:
+    """
+    Get boolean from a string.
+
+    "true" / "t" / "y" -> True
+
+    "false" / "f" / "n" -> False
+
+    :param flag: a string representing a boolean
+    :return: boolean
+    """
+    flag = flag.lower()
+    if flag in {"true", "t", "y"}:
+        return True
+    elif flag in {"false", "f", "n"}:
+        return False
+    raise ValueError

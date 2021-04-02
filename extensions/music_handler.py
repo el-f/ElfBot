@@ -3,7 +3,7 @@ from discord import Message
 from discord.ext.commands import Context, command, has_permissions
 
 from extensions import commands
-from utils.utils import log_event, db, get_dict
+from utils.utils import log_event, db, get_dict, get_bool
 from extensions.extension_templates import DatabaseHandler
 
 MUSIC_CH_DB_KEY = 'music_channels_for_servers'
@@ -32,11 +32,9 @@ class MusicChannelsDBHandler(DatabaseHandler):
         global CHECK_SPECIAL_CASES
         await ctx.message.delete()
         if len(flag) > 0:
-            if flag in {"true", "t", "y"}:
-                CHECK_SPECIAL_CASES = True
-            elif flag in {"false", "f", "n"}:
-                CHECK_SPECIAL_CASES = False
-            else:
+            try:
+                CHECK_SPECIAL_CASES = get_bool(flag)
+            except ValueError:
                 await ctx.author.send(f"Invalid Flag Value: {flag}")
         await ctx.author.send(f"CHECK_SPECIAL_CASES now set as {CHECK_SPECIAL_CASES}")
 
