@@ -76,6 +76,6 @@ def get_bool(flag: str) -> bool:
     flag = flag.lower()
     if flag in {"true", "t", "y"}:
         return True
-    elif flag in {"false", "f", "n"}:
+    if flag in {"false", "f", "n"}:
         return False
     raise ValueError
