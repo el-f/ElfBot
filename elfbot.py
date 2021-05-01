@@ -1,4 +1,4 @@
-from discord.ext.commands import Bot, Context, MissingRequiredArgument, MissingPermissions
+from discord.ext.commands import Bot, Context, MissingRequiredArgument, MissingPermissions, CommandNotFound
 from discord import Activity, ActivityType, Message
 from extensions.music_handler import is_music_related, in_music_channel, get_music_channel_id_for_guild
 from extensions.prefix_handler import get_prefix, get_prefix_for_guild
@@ -17,7 +17,10 @@ async def on_ready():
 
 @elfbot.event
 async def on_command_error(ctx: Context, error):
-    if isinstance(error, MissingRequiredArgument):
+    if isinstance(error, CommandNotFound):
+        return
+
+    elif isinstance(error, MissingRequiredArgument):
         await ctx.send(f'Please use the command with the required argument: <{error.param}>')
 
     elif isinstance(error, MissingPermissions):
