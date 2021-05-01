@@ -88,6 +88,12 @@ class AdminCommands(Extension):
         owner = await self.bot.fetch_user(app_info.owner.id)
         await owner.send(file=discord.File(EVENTS_LOG_FILE_NAME))
 
+    @command(aliases=['rep'], hidden=True)
+    @has_permissions(administrator=True)
+    async def repeat(self, ctx: Context):
+        await ctx.message.delete()
+        await ctx.send(ctx.message)
+
 
 # expected function for outside calling function 'load_extension()'
 def setup(_bot):
