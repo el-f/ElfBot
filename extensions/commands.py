@@ -93,11 +93,11 @@ class AdminCommands(Extension):
     async def repeat(self, ctx: Context):
         msg: discord.Message = ctx.message
         await msg.delete()
+        if msg.content:
+            await ctx.send(' '.join(msg.content.split()[1:]))  # remove command
         if msg.embeds:
             for embed in msg.embeds:
                 await ctx.send(embed=embed)
-        if msg.content:
-            await ctx.send(msg.content)
 
 
 # expected function for outside calling function 'load_extension()'
