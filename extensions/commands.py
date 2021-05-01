@@ -91,8 +91,13 @@ class AdminCommands(Extension):
     @command(aliases=['rep'], hidden=True)
     @has_permissions(administrator=True)
     async def repeat(self, ctx: Context):
-        await ctx.message.delete()
-        await ctx.send(ctx.message)
+        msg: discord.Message = ctx.message
+        await msg.delete()
+        if msg.embeds:
+            for embed in msg.embeds:
+                await ctx.send(embed=embed)
+        if msg.content:
+            await ctx.send(msg.content)
 
 
 # expected function for outside calling function 'load_extension()'
