@@ -20,7 +20,7 @@ async def on_command_error(ctx: Context, error):
     if isinstance(error, CommandNotFound):
         return
 
-    elif isinstance(error, MissingRequiredArgument):
+    if isinstance(error, MissingRequiredArgument):
         await ctx.send(f'Please use the command with the required argument: <{error.param}>')
 
     elif isinstance(error, MissingPermissions):
