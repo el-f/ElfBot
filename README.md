@@ -23,3 +23,13 @@ The bot communicates with a Redis database holding all the servers' prefixes + m
       - Invite the bot to a server you manage
   - Go into the designated music spam text channel and enter the command ```?setmusic``` (```?``` - prefix)
   - Enjoy cleaner text channels without all the spam from music bots related messages
+
+
+###### Quick Demo Of The Filtering Feature:
+https://user-images.githubusercontent.com/39451680/117056924-844d8480-ad25-11eb-8e40-e42b9343c0f7.mp4
+
+
+
+
+
+
