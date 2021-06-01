@@ -49,7 +49,7 @@ async def on_message(message: Message):
         await message.channel.send(f'{author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info')
         return
 
-    if process_msg_for_music(message, elfbot):
+    if await process_msg_for_music(message, elfbot):
         return
 
     await elfbot.process_commands(message)
