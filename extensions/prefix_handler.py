@@ -1,6 +1,6 @@
 import logging
 from discord import Message
-from discord.ext.commands import Cog, Context, command, has_permissions
+from discord.ext.commands import Cog, Context, command, has_permissions, Bot
 from utils.utils import log_event, db, get_dict
 from extensions.extension_templates import DatabaseHandler
 
@@ -27,6 +27,17 @@ class PrefixDBHandler(DatabaseHandler):
 ############################
 #      STATIC METHODS      #
 ############################
+
+
+def process_msg_for_mention(message: Message, elfbot: Bot):
+    if elfbot.user.mentioned_in(message):
+        pf = get_prefix_for_guild(message.guild.id)
+        author = message.author
+        await message.channel.send(f'{author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info')
+        return True
+
+    return False
+
 
 def get_prefix_for_guild(guild_id: int):
     prefixes_raw_dict = db.get(PREFIXES_DB_KEY)

@@ -1,6 +1,6 @@
 import logging
 from discord import Message
-from discord.ext.commands import Context, command, has_permissions
+from discord.ext.commands import Context, command, has_permissions, Bot
 
 from extensions import commands
 from utils.utils import log_event, db, get_dict, get_bool
@@ -109,6 +109,21 @@ MUSIC_RELATED_SPECIALS_CASES = [
 CHECK_SPECIAL_CASES = True
 
 HELP_COMMAND_TRIGGER = 'list of commands'
+
+
+def process_msg_for_music(message: Message, elfbot: Bot):
+    if is_music_related(message) and not in_music_channel(message):
+        await message.delete()
+        log_event(f"<server='{message.guild}'> Caught unauthorized music related message by {message.author}")
+        music_channel = elfbot.get_channel(get_music_channel_id_for_guild(message.guild.id))
+        if message.embeds:
+            for embed in message.embeds:
+                await music_channel.send(embed=embed)
+        if message.content:
+            await music_channel.send(message.content)
+        return True
+
+    return False
 
 
 def is_music_related(message: Message):

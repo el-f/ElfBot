@@ -1,7 +1,7 @@
 from discord.ext.commands import Bot, Context, MissingRequiredArgument, MissingPermissions, CommandNotFound
 from discord import Activity, ActivityType, Message
-from extensions.music_handler import is_music_related, in_music_channel, get_music_channel_id_for_guild
-from extensions.prefix_handler import get_prefix, get_prefix_for_guild
+from extensions.music_handler import process_msg_for_music
+from extensions.prefix_handler import get_prefix, process_msg_for_mention
 from utils.utils import *
 
 elfbot = Bot(command_prefix=get_prefix)  # callable prefix - invoked on every message
@@ -43,23 +43,13 @@ async def on_message(message: Message):
     if not message.guild:  # DM case
         return
 
-    if elfbot.user.mentioned_in(message):
-        pf = get_prefix_for_guild(message.guild.id)
-        author = message.author
-        await message.channel.send(f'{author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info')
+    if process_msg_for_mention(message, elfbot):
+        return
 
-    elif is_music_related(message) and not in_music_channel(message):
-        await message.delete()
-        log_event(f"<server='{message.guild}'> Caught unauthorized music related message by {message.author}")
-        music_channel = elfbot.get_channel(get_music_channel_id_for_guild(message.guild.id))
-        if message.embeds:
-            for embed in message.embeds:
-                await music_channel.send(embed=embed)
-        if message.content:
-            await music_channel.send(message.content)
+    if process_msg_for_music(message, elfbot):
+        return
 
-    else:
-        await elfbot.process_commands(message)
+    await elfbot.process_commands(message)
 
 
 # load all extensions
