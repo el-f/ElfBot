@@ -111,7 +111,7 @@ CHECK_SPECIAL_CASES = True
 HELP_COMMAND_TRIGGER = 'list of commands'
 
 
-def process_msg_for_music(message: Message, elfbot: Bot):
+async def process_msg_for_music(message: Message, elfbot: Bot):
     if is_music_related(message) and not in_music_channel(message):
         await message.delete()
         log_event(f"<server='{message.guild}'> Caught unauthorized music related message by {message.author}")

@@ -1,7 +1,7 @@
 from discord.ext.commands import Bot, Context, MissingRequiredArgument, MissingPermissions, CommandNotFound
 from discord import Activity, ActivityType, Message
 from extensions.music_handler import process_msg_for_music
-from extensions.prefix_handler import get_prefix, process_msg_for_mention
+from extensions.prefix_handler import get_prefix, get_prefix_for_guild
 from utils.utils import *
 
 elfbot = Bot(command_prefix=get_prefix)  # callable prefix - invoked on every message
@@ -43,7 +43,10 @@ async def on_message(message: Message):
     if not message.guild:  # DM case
         return
 
-    if process_msg_for_mention(message, elfbot):
+    if elfbot.user.mentioned_in(message):
+        pf = get_prefix_for_guild(message.guild.id)
+        author = message.author
+        await message.channel.send(f'{author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info')
         return
 
     if process_msg_for_music(message, elfbot):
