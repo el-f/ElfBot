@@ -77,8 +77,12 @@ class AdminCommands(Extension):
 
     @command(brief="Get the number of servers the bot is moderating")
     async def deployment(self, ctx: Context):
+        # Optional future addition: sort guilds by member count before printing
+        guild_names = "\n".join([f"{i + 1}) {g.name}" for i, g in enumerate(self.bot.guilds)])
+
         await ctx.send(f'{ctx.author.mention}'
-                       f' {self.bot.user.name} Is Currently Moderating {len(self.bot.guilds)} Servers')
+                       f' {self.bot.user.name} Is Currently Moderating {len(self.bot.guilds)}'
+                       f' Servers:\n{guild_names}')
 
     @command(aliases=['sl'], brief="Send Events log To Owner", hidden=True)
     @commands.is_owner()
