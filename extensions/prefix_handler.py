@@ -1,6 +1,6 @@
 import logging
 from discord import Message
-from discord.ext.commands import Cog, Context, command, has_permissions
+from discord.ext.commands import Cog, Context, command, has_permissions, Bot
 from utils.utils import log_event, db, get_dict
 from extensions.extension_templates import DatabaseHandler
 
@@ -41,7 +41,8 @@ def get_prefix_for_guild(guild_id: int):
     return DEFAULT_PREFIX
 
 
-def get_prefix(bot, message: Message):  # bot is passed but not needed (type: commands.Bot)
+# bot is passed by default by the API but not needed for this function.
+def get_prefix(_: Bot, message: Message):
     return get_prefix_for_guild(message.guild.id)
 
 
