@@ -103,6 +103,17 @@ class AdminCommands(Extension):
             for embed in msg.embeds:
                 await ctx.send(embed=embed)
 
+    @command(aliases=['hist'], hidden=True)
+    @has_permissions(administrator=True)
+    async def history(self, ctx: Context, limit=1, index: int = None):
+        ch: discord.TextChannel = ctx.channel
+        hist: list[discord.Message] = await ch.history(limit=limit + 1).flatten()
+        for msg in (hist[1:][int(index + 1)],) if index else hist[1:]:
+            if msg.content:
+                await ctx.send(msg.content)
+            if msg.embeds:
+                await ctx.send(msg.embeds)
+
 
 # expected function for outside calling function 'load_extension()'
 def setup(_bot):
