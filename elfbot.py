@@ -61,3 +61,4 @@ for filename in os.listdir('extensions'):
         elfbot.load_extension(f'extensions.{filename[:-3]}')
 
 elfbot.run(get_token())
+log_event(f'{elfbot.user} is fully loaded')
