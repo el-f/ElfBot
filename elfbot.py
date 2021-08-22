@@ -60,6 +60,4 @@ if __name__ == '__main__':
         if filename.endswith('.py') and 'template' not in filename:
             elfbot.load_extension(f'extensions.{filename[:-3]}')
 
-    log_event(f'{elfbot.user} is fully loaded')
-
     elfbot.run(get_token())
