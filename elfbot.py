@@ -54,11 +54,12 @@ async def on_message(message: Message):
 
     await elfbot.process_commands(message)
 
+if __name__ == '__main__':
+    # load all extensions
+    for filename in os.listdir('extensions'):
+        if filename.endswith('.py') and 'template' not in filename:
+            elfbot.load_extension(f'extensions.{filename[:-3]}')
 
-# load all extensions
-for filename in os.listdir('extensions'):
-    if filename.endswith('.py') and 'template' not in filename:
-        elfbot.load_extension(f'extensions.{filename[:-3]}')
+    log_event(f'{elfbot.user} is fully loaded')
 
-elfbot.run(get_token())
-log_event(f'{elfbot.user} is fully loaded')
+    elfbot.run(get_token())
