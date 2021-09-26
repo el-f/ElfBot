@@ -45,14 +45,16 @@ async def on_message(message: Message):
 
     if elfbot.user.mentioned_in(message):
         pf = get_prefix_for_guild(message.guild.id)
-        author = message.author
-        await message.channel.send(f'{author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info')
+        await message.channel.send(
+            f'{message.author.mention}\nMy prefix in this server is {pf}\nUse "{pf}help" for more info'
+        )
         return
 
     if await process_msg_for_music(message, elfbot):
         return
 
     await elfbot.process_commands(message)
+
 
 if __name__ == '__main__':
     # load all extensions
