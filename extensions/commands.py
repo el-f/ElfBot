@@ -112,7 +112,8 @@ class AdminCommands(Extension):
             if msg.content:
                 await ctx.send(msg.content)
             if msg.embeds:
-                await ctx.send(msg.embeds)
+                for embed in msg.embeds:
+                    await ctx.send(embed=embed)
 
 
 # expected function for outside calling function 'load_extension()'
