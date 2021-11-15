@@ -44,12 +44,15 @@ class MusicChannelsDBHandler(DatabaseHandler):
 #####################
 
 MUSIC_BOTS = {
-    # top 5 most used music bots
-    'Groovy#7254',
-    'Rythm#3722',
+    # most used music specific bots - for faster detection of music commands
+    # 'Groovy#7254',    # rip @September 15th, 2021 :(
+    # 'Rythm#3722',     # rip @August 30th, 2021 :(
+    'Vexera#8487',
+    'Hydra#1214',
     'FredBoat♪♪#7284',
     '24/7 🔊#6493',
-    'Vexera#8487'
+    'Chip#4145',
+    'BMO#5616',
 }
 
 MUSIC_RELATED_COMMANDS = {
