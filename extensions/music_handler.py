@@ -116,7 +116,6 @@ HELP_COMMAND_TRIGGER = 'list of commands'
 
 async def process_msg_for_music(message: Message, elfbot: Bot):
     if is_music_related(message) and not in_music_channel(message):
-        await message.delete()
         log_event(f"<server='{message.guild}'> Caught unauthorized music related message by {message.author}")
         music_channel = elfbot.get_channel(get_music_channel_id_for_guild(message.guild.id))
         if message.embeds:
@@ -124,6 +123,7 @@ async def process_msg_for_music(message: Message, elfbot: Bot):
                 await music_channel.send(embed=embed)
         if message.content:
             await music_channel.send(message.content)
+        await message.delete()
         return True
 
     return False
