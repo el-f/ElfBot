@@ -31,9 +31,3 @@ A simple Discord bot for handling Music Bots' spam, built using [`discord.py`](h
 
 ###### Quick Demo Of The Filtering Feature:
 https://user-images.githubusercontent.com/39451680/117056924-844d8480-ad25-11eb-8e40-e42b9343c0f7.mp4
-
-
-
-
-
-
