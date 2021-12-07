@@ -145,8 +145,10 @@ def is_music_related(message: Message):
 
     msg = message.content[1:].lower()  # remove prefix, insure case matching
 
+    msg_spaces_delimited_strings = msg.split()
+
     # get first string
-    if msg.split()[0] in MUSIC_RELATED_COMMANDS:
+    if msg_spaces_delimited_strings and msg_spaces_delimited_strings[0] in MUSIC_RELATED_COMMANDS:
         return True
 
     if CHECK_SPECIAL_CASES:
