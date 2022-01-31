@@ -1,8 +1,9 @@
 import logging
 from discord import Message
 from discord.ext.commands import Cog, Context, command, has_permissions, Bot
-from utils.utils import log_event, db, get_dict
+from utils.utils import log_event, get_dict
 from extensions.extension_templates import DatabaseHandler
+from db import db
 
 DEFAULT_PREFIX = '?'
 PREFIXES_DB_KEY = 'prefixes_for_servers'

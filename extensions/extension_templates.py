@@ -1,6 +1,7 @@
 import json
 from discord.ext.commands import Cog, Bot, Context
-from utils.utils import log_event, db, get_dict
+from utils.utils import log_event, get_dict
+from db import db
 
 
 class Extension(Cog):

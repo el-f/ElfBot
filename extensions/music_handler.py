@@ -3,8 +3,9 @@ from discord import Message
 from discord.ext.commands import Context, command, has_permissions, Bot
 
 from extensions import commands
-from utils.utils import log_event, db, get_dict, get_bool
+from utils.utils import log_event, get_dict, get_bool
 from extensions.extension_templates import DatabaseHandler
+from db import db
 
 MUSIC_CH_DB_KEY = 'music_channels_for_servers'
 

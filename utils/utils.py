@@ -1,6 +1,5 @@
 import json
 import os
-import redis
 import logging
 from datetime import datetime
 
@@ -12,26 +11,6 @@ def log_event(description: str, level=logging.INFO):
     msg = f'{datetime.now().strftime("[%d/%m/%y | %H:%M:%S]")} - {description}'
     logging.log(level=level, msg=msg)
     print(msg)
-
-
-def get_db_url():
-    """
-    the db_url is in a private file called "db_url"
-    first we try to find the token file for case of running from individual machine
-    if file not found we look for environment var for case of running from a deployed server
-
-    :return: redis db_url (string)
-    """
-    try:
-        db_url = open("utils/db_url", "r").read()
-        log_event('Fetched db_url from db_url file')
-        return db_url
-    except FileNotFoundError:
-        log_event('Fetched db_url from environment variable')
-        return os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
-
-
-db = redis.from_url(get_db_url())
 
 
 def get_token():
