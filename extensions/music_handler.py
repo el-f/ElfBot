@@ -32,10 +32,10 @@ class MusicChannelsDBHandler(DatabaseHandler):
     async def getmusic(self, ctx: Context):
         channel_id = self.get_value_for_server(ctx.guild.id)
         if channel_id is None:
-            await ctx.send(f'{ctx.author.mention} No music spam channel has been set for the server {ctx.guild}')
+            await ctx.send(f"{ctx.author.mention} No music spam channel has been set for the server '{ctx.guild}'")
         else:
             channel = ctx.guild.get_channel(channel_id)
-            await ctx.send(f'{ctx.author.mention} The music spam channel for the server {ctx.guild} is {channel}')
+            await ctx.send(f"{ctx.author.mention} The music spam channel for the server '{ctx.guild}' is '{channel}'")
 
     @command(brief="Toggle special cases checking in music detection", hidden=True)
     @commands.is_owner()
