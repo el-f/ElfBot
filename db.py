@@ -17,7 +17,7 @@ def get_db_url():
         return db_url
     except FileNotFoundError:
         log_event('Fetched db_url from environment variable')
-        return os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+        return os.getenv('REDIS_URL', 'redis://localhost:6379')
 
 
 db = redis.from_url(get_db_url())
