@@ -85,7 +85,6 @@ MUSIC_RELATED_COMMANDS = {
     'next',
     'np',
     'pause',
-    'pf',
     'play',
     'prev',
     'previous',
