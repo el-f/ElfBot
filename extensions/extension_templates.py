@@ -28,6 +28,14 @@ class DatabaseHandler(Extension):
         dictionary[str(guild_id)] = value
         db.set(self.DB_KEY, json.dumps(dictionary))
 
+    def get_value_for_server(self, guild_id):
+        raw_dict = db.get(self.DB_KEY)
+        if raw_dict is None:
+            return None
+        else:
+            dictionary = get_dict(raw_dict)
+            return dictionary.get(str(guild_id))
+
     def remove_server(self, guild_id: int):
         raw_dict = db.get(self.DB_KEY)
         if raw_dict is not None:

@@ -27,6 +27,16 @@ class MusicChannelsDBHandler(DatabaseHandler):
         log_event(event)
         await ctx.send(f'{ctx.author.mention} {event}')
 
+    @command(brief="Get the music spam channel for a server")
+    @has_permissions(administrator=True)
+    async def getmusic(self, ctx: Context):
+        channel_id = self.get_value_for_server(ctx.guild.id)
+        if channel_id is None:
+            await ctx.send(f'{ctx.author.mention} No music spam channel has been set for the server {ctx.guild}')
+        else:
+            channel = ctx.guild.get_channel(channel_id)
+            await ctx.send(f'{ctx.author.mention} The music spam channel for the server {ctx.guild} is {channel}')
+
     @command(brief="Toggle special cases checking in music detection", hidden=True)
     @commands.is_owner()
     async def tsc(self, ctx: Context, flag: str = ""):
