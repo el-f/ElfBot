@@ -6,18 +6,20 @@ A simple Discord bot for handling Music Bots' spam, built using [`discord.py`](h
 - All music related messages are redirected to the server's dedicated music channel.
 - All the servers' music channels & prefixes are saved in an online [`Redis`](https://redis.io/) database, which the bot communicates with.
 
+## Deployment Note:
+**On Nov 28th 22, Heroku discontinued all of their free tier services. As a result, I'm forced to take this bot offline until a good free service comes along or until Raspberry Pi's are back in stock.**
 
 ## Usage:
 
-  - Use My Deployed Instance:
-    - https://tinyurl.com/GetElfBot
+  - ~~Use My Deployed Instance:~~
+    - ~~https://tinyurl.com/GetElfBot~~
   - Or Deploy Your Own Instance:
     - Self Hosted:
       - Add a file named ```token``` to the utils folder with your bot user token
       - Add a file named ```db_url``` to the utils folder with a ```redis://...``` redis DB URL
       - Run ```elfbot.py```
       - Invite the bot to a server you manage
-    - Using `Heroku`:
+    - Using `Heroku`: **(No longer free)**
       - Fork this repo
       - Create a new ```heroku``` app, link it to your fork and enable automatic deploys
       - Under the app's settings add a config var ```DISCORD_BOT_TOKEN``` and give it your bot user token as a value
